@@ -1,8 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { TokenInterceptor } from './@core/services';
+import { AuthenticationService } from './@core/services';
+import { AuthGuard } from './@core/guard/auth.guard';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -29,9 +36,20 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
     NgbModule.forRoot(),
     AngularFontAwesomeModule,
     AppRoutingModule,
-      BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [
+      AuthenticationService,
+      AuthGuard,
+      {
+          provide: HTTP_INTERCEPTORS,
+          useClass: TokenInterceptor,
+          multi: true
+      },
+      {provide: Window, useValue: window},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

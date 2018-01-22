@@ -11,14 +11,21 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'v1' => [
+            'class' => 'app\modules\v1\Module',
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
             'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            // 'enableAutoLogin' => true,
+            // 'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'enableSession' => false,
+            'loginUrl' => null,
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
@@ -36,14 +43,16 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
+            //'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/default']],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/api']],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/orgs']],
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
