@@ -34,9 +34,10 @@ class ApiController extends Controller
         if($model->login()){
             $user = \common\models\User::findByUsername($username);
             $token = $user->getJwt();
+            $refreshToken = $user->getRefreshJwt();
             $decoded=User::decodeJWT($token);
             //VarDumper::dump($decoded,10,true);
-            return ['token'=>$token];
+            return ['user'=>$user->username,'access'=>$token, 'refresh'=>$refreshToken];
         } else {
             return ['errors'=>$model->getErrors()];
         }

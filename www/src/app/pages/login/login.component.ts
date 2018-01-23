@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
             .subscribe(
                 result => {
                     if (result === true) {
-                        this.router.navigate(['/test']);
+                        this.router.navigate(['/home']);
                     } else {
                         if (result.hasOwnProperty('password')) {
                             this.error = result.password;
@@ -51,5 +51,4 @@ export class LoginComponent implements OnInit {
                 () => {console.log('Login finished'); }
             );
     }
-
 }

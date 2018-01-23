@@ -13,7 +13,7 @@ export class AuthenticationService {
     authState$ = this._authStateSource.asObservable();
     public token: string;
     public refreshToken: string;
-    public userLabel: string;
+    public user: string;
     private apiURL: string;
 
     constructor( private httpClient: HttpClient, @Inject(Window) private _window: Window) {
@@ -21,8 +21,8 @@ export class AuthenticationService {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.token = currentUser && currentUser.token;
         this.refreshToken = currentUser && currentUser.refresh;
-        this.userLabel = currentUser && currentUser.userLabel;
-        const hostname = this._window.location.hostname.replace(/^(www\.)/,'' );
+        this.user = currentUser && currentUser.user;
+        const hostname = this._window.location.hostname.replace(/^(www\.)/, '' );
         this.apiURL = `${this._window.location.protocol}//${GlobalParams.API_SUBDOMEN}.${hostname}`;
         console.log(this._window.location);
     }
@@ -53,15 +53,13 @@ export class AuthenticationService {
         };
         const url = this.apiURL + '/v1/api/login';
         // const url = 'http://api.agmsite.com/login';
-        console.log("!!!!!");
+        console.log('!!!!!');
         console.log(url);
         return this.httpClient.post(url, body).map((response: any) => {
             // login successful if there's a jwt token in the response
             const accessToken = response && response.access;
             const refreshToken = response && response.refresh;
-            const routes = response && response.routes;
-            const userLabel = response && response.userLabel;
-            this.userLabel = userLabel;
+            this.user = response && response.user;
             const jwtHelper: JwtHelper = new JwtHelper();
             if (accessToken) {
                 // set token property
@@ -70,37 +68,40 @@ export class AuthenticationService {
                 // store username and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem(
                     'currentUser',
-                    JSON.stringify({ username: username, userLabel: userLabel, token: accessToken, refresh: refreshToken, routes: routes})
+                    JSON.stringify({ user: this.user, token: accessToken, refresh: refreshToken})
                 );
                 this.changeAuthState(1);
                 // return true to indicate successful login
                 return true;
             } else {
-                const errors = response && response.errors;
                 // return errors list to indicate failed login
-                return errors;
+                return response && response.errors;
             }
         });
     }
-    refreshTokens(currentUser) {
+  logout(): void {
+    this.token = null;
+    this.refreshToken = null;
+    this.user = null;
+    localStorage.removeItem('currentUser');
+    this.changeAuthState(0);
+  }
+  refreshTokens(currentUser) {
         const body = {
             'token': this.token,
         };
-        return this.httpClient.post(this.apiURL + 'refresh', body).map((response: any) => {
+        return this.httpClient.post(this.apiURL + '/v1/api/refresh', body).map((response: any) => {
             const accessToken = response && response.access;
             // const username = accessToken && accessToken.username;
             const refreshToken = response && response.refresh;
-            const routes = response && response.routes;
-            const userLabel = currentUser.userLabel;
-            this.userLabel = userLabel;
-            const username = currentUser.username;
+            this.user = currentUser.user;
             const jwtHelper: JwtHelper = new JwtHelper();
             if (accessToken) {
                 this.token = accessToken;
                 this.refreshToken = refreshToken;
                 localStorage.setItem(
                     'currentUser',
-                    JSON.stringify({ username: username, userLabel: userLabel, token: accessToken, refresh: refreshToken, routes: routes})
+                    JSON.stringify({ user: this.user, token: accessToken, refresh: refreshToken})
                 );
                 this.changeAuthState(1);
                 return true;
@@ -116,13 +117,5 @@ export class AuthenticationService {
 
     getRefreshToken() {
         return this.refreshToken;
-    }
-
-    logout(): void {
-        this.token = null;
-        this.refreshToken = null;
-        this.userLabel = null;
-        localStorage.removeItem('currentUser');
-        this.changeAuthState(0);
     }
 }
