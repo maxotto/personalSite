@@ -50,6 +50,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
       },
       {provide: Window, useValue: window},
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule { }
