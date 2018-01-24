@@ -1,0 +1,8 @@
+.container-fluid {
+    margin-top: 15px;
+}
+agm-map {
+    min-height: 100% !important;
+    height: 100% !important;
+    width: 100%;
+}

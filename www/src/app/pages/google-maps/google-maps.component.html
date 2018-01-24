@@ -1,0 +1,10 @@
+<div class="container-fluid" (window:resize)="onResize($event)" [style.height.px]='height'>
+  <agm-map
+    [latitude]="lat"
+    [longitude]="lng"
+    [zoom]="zoom"
+    [mapTypeControl]=true
+  >
+    <agm-marker id="marker_1" #m [latitude]="lat" [longitude]="lng" [markerDraggable]=true (dragEnd)="dragEnd(m.id, $event)"></agm-marker>
+  </agm-map>
+</div>
