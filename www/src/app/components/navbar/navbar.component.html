@@ -11,6 +11,9 @@
         <li *ngIf="isLogged()" class="nav-item">
           <a class="nav-link" routerLink="/gallery"  routerLinkActive="active"><fa name="photo"></fa> Фотогалерея </a>
         </li>
+        <li *ngIf="isLogged()" class="nav-item">
+          <a class="nav-link" routerLink="/map"  routerLinkActive="active"><fa name="map"></fa> Карты Google </a>
+        </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Search">

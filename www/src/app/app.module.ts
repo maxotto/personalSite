@@ -21,15 +21,17 @@ import { YandexMailLoginFormComponent } from './components/yandex-mail-login-for
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
+import { AgmCoreModule } from '@agm/core';
+
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     FooterComponent,
-      HomeComponent,
-      YandexMailLoginFormComponent,
-      SidebarComponent,
-      NotFoundComponent
+    HomeComponent,
+    YandexMailLoginFormComponent,
+    SidebarComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +40,10 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyARIMiX_C7rE4U-pM6nih2n2z2z0YfhrfY'
+    })
   ],
   providers: [
       AuthenticationService,
