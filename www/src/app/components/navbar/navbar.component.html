@@ -14,6 +14,9 @@
         <li *ngIf="isLogged()" class="nav-item">
           <a class="nav-link" routerLink="/map"  routerLinkActive="active"><fa name="map"></fa> Карты Google </a>
         </li>
+        <li *ngIf="isLogged()" class="nav-item">
+          <a class="nav-link" routerLink="/about"  routerLinkActive="active"><fa name="question-circle"></fa> О проекте </a>
+        </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Search">

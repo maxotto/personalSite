@@ -3,9 +3,9 @@
     <div class="col align-self-start">
     </div>
     <div class="col align-self-center">
-      <form method="post" action="https://passport.yandex.ru/for/mikhailichenko.su?mode=auth">
+      <form  #form method="post" action="https://passport.yandex.ru/for/mikhailichenko.su?mode=auth">
         <input type="hidden" name="retpath" value="http://mail.yandex.ru/for/mikhailichenko.su">
-        <button type="submit" class="btn btn-primary">Вход в почту</button>
+        <button type="submit" class="btn btn-primary" (click)="form.submit()">Вход в почту</button>
       </form>
       <hr>
       <p class="text-white"><fa name="cog" animation="spin"></fa>Поддержать проект</p>

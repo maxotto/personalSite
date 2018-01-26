@@ -9,6 +9,7 @@ const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'login', loadChildren: './pages/login/login.module#LoginModule' },
     { path: 'map', loadChildren: './pages/google-maps/google-maps.module#GoogleMapsModule', canLoad: [AuthGuard] },
+    { path: 'about', loadChildren: './pages/about/about.module#AboutModule'},
     { path: 'gallery', loadChildren: './pages/photo-gallery/photo-gallery.module#PhotoGalleryModule', canLoad: [AuthGuard]  },
     { path: 'not-found', component: NotFoundComponent},
     { path: '**', redirectTo: 'not-found' }
