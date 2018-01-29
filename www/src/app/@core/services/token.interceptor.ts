@@ -6,22 +6,29 @@ import { GlobalParams } from '../../params';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-    private noTokenUrl = 'api/login';
+    private noTokenUrls = [];
     private refreshTokenUrl = 'api/refresh';
     constructor(@Inject(Window) private _window: Window, private injector: Injector) {
         const hostname = this._window.location.hostname.replace(/^(www\.)/,'' );
         const apiURL = `${GlobalParams.API_SUBDOMEN}.${hostname}`;
-        this.noTokenUrl = `api.agmsite.com/v1/api/login`;
+        this.noTokenUrls = [
+          `api.agmsite.com/v1/api/login`,
+          'api.thingspeak.com/'
+        ];
         this.refreshTokenUrl = `${apiURL}/refresh`;
     }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const url = request.url;
         // Get the auth header from the service.
         const auth = this.injector.get(AuthenticationService);
-        console.log(request);
-        if (url.indexOf(this.noTokenUrl) >= 0) {
+        let noTokenUrl = false;
+        for (const u of this.noTokenUrls) {
+            if (url.indexOf(u) >= 0) {
+                noTokenUrl = true;
+            }
+        }
+        if (noTokenUrl) {
             // by https://github.com/angular/angular/issues/18224
-            // console.log(url);
             return next.handle(request);
         }
         if (url.indexOf(this.refreshTokenUrl) >= 0) {

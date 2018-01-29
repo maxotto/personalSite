@@ -11,6 +11,7 @@ const routes: Routes = [
     { path: 'map', loadChildren: './pages/google-maps/google-maps.module#GoogleMapsModule', canLoad: [AuthGuard] },
     { path: 'about', loadChildren: './pages/about/about.module#AboutModule'},
     { path: 'gallery', loadChildren: './pages/photo-gallery/photo-gallery.module#PhotoGalleryModule', canLoad: [AuthGuard]  },
+    { path: 'tmonitor', loadChildren: './pages/temp-monitor/temp-monitor.module#TempMonitorModule', canLoad: [AuthGuard]  },
     { path: 'not-found', component: NotFoundComponent},
     { path: '**', redirectTo: 'not-found' }
 ];

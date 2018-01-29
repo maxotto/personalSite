@@ -1,3 +1,6 @@
 export const GlobalParams = Object.freeze({
-    API_SUBDOMEN: 'api'
+  API_SUBDOMEN: 'api',
+  THINGSPEAK_API_READ_KEY: 'YODZIINAR4YEPRY5',
+  THINGSPEAK_API_TIMESCALE: 60,
+  THINGSPEAK_API_DAYS: 5
 });

@@ -24,7 +24,6 @@ export class AuthenticationService {
         this.user = currentUser && currentUser.user;
         const hostname = this._window.location.hostname.replace(/^(www\.)/, '' );
         this.apiURL = `${this._window.location.protocol}//${GlobalParams.API_SUBDOMEN}.${hostname}`;
-        console.log(this._window.location);
     }
     changeAuthState(number) {
         this._authStateSource.next(number);
