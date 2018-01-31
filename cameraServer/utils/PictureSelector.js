@@ -1,5 +1,6 @@
 var watchr = require('watchr');
 var fs = require('fs');
+var fsu = require('./fsu');
 module.exports = {
     watch: function (path, dest) {
         function next (err) {
@@ -9,11 +10,11 @@ module.exports = {
         function listener (changeType, fullPath, currentStat, previousStat) {
             switch ( changeType ) {
                 case 'update':
-                    console.log('the file', fullPath, 'was updated', currentStat, previousStat);
+                    // console.log('the file', fullPath, 'was updated', currentStat, previousStat);
                     break;
                 case 'create':
                     console.log('the file', fullPath, 'was created', currentStat);
-                    copyFileToDestination(
+                    fsu.copyFile(
                         fullPath,
                         dest,
                         function(err) {
@@ -24,28 +25,8 @@ module.exports = {
                     );
                     break;
                 case 'delete':
-                    console.log('the file', fullPath, 'was deleted', previousStat);
+                    // console.log('the file', fullPath, 'was deleted', previousStat);
                     break
-            }
-        }
-        function copyFileToDestination(source, target, cb) {
-            var cbCalled = false;
-
-            var rd = fs.createReadStream(source);
-            rd.on("error", done);
-
-            var wr = fs.createWriteStream(target);
-            wr.on("error", done);
-            wr.on("close", function(ex) {
-                done();
-            });
-            rd.pipe(wr);
-
-            function done(err) {
-                if (!cbCalled) {
-                    cb(err);
-                    cbCalled = true;
-                }
             }
         }
 // Create the stalker for the path
