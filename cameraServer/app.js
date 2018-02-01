@@ -46,4 +46,12 @@ var picSel1 = require('./utils/PictureSelector');
 picSel1.watch('C:/watch/cam1','C:\\Users\\amihailichenko\\Desktop\\NodeJs tests\\camPicturePulisher\\public\\images\\cam1.jpg');
 var picSel2 = require('./utils/PictureSelector');
 picSel2.watch('C:/watch/cam2','C:\\Users\\amihailichenko\\Desktop\\NodeJs tests\\camPicturePulisher\\public\\images\\cam2.jpg');
+
+var fsu = require('./utils/fsu');
+var
+    sourceFolder = 'e:\\camera1',
+    destFolderRoot = 'e:\\cameraAll',
+    extension = 'jpg';
+fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
+
 module.exports = app;
