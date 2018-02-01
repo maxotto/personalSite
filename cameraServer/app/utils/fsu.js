@@ -31,6 +31,7 @@ function processCameraPictures(sourceFolder, destFolderRoot, extFilter) {
                 fs.stat(file, generate_callback(file));
             });
         } else {
+            console.log(list);
             list.filter(extension).forEach(function (value) {
                 console.log(value);
                 var file = sourceFolder + '/' + value;

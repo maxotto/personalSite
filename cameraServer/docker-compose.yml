@@ -1,11 +1,10 @@
 version: '3'
 services:
-  cameraServer:
-    build: ./nginx-php7-ldap
-    image: camera-server:latest
-    container_name: camera-server
+  cameraserver:
+    build: .
     ports:
      - "3000:3000"
     volumes:
-     - /home/web-camera:/usr/src/app/web-camera-in
-     - /mnt/hdd1/web-camera:/usr/src/app/web-camera-storage
+     - /mnt/hdd1/cameraServer/app:/usr/src/cameraServer/app
+     - /home/web_camera:/usr/src/cameraServer/web-camera-in
+     - /mnt/hdd1/cameraServer/data:/usr/src/cameraServer/web-camera-storage

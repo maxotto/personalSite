@@ -1,8 +1,6 @@
 FROM node:carbon
-WORKDIR /usr/src/app
-COPY package.json ./
-RUN npm install
-COPY . .
+WORKDIR /usr/src/cameraServer/app
+COPY ./app .
 EXPOSE 3000
-VOLUME ["/usr/src/app/web-camera-in", "/usr/src/app/web-camera-storage"]
+VOLUME ["/usr/src/cameraServer/web-camera-in", "/usr/src/cameraServer/web-camera-storage", "/usr/src/cameraServer/app"]
 CMD [ "npm" , "start" ]
