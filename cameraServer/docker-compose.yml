@@ -6,5 +6,5 @@ services:
      - "3000:3000"
     volumes:
      - /mnt/hdd1/cameraServer/app:/usr/src/cameraServer/app
-     - /home/web_camera:/usr/src/cameraServer/web-camera-in
      - /mnt/hdd1/cameraServer/data:/usr/src/cameraServer/web-camera-storage
+     - /home/web_camera:/usr/src/cameraServer/web-camera-in
