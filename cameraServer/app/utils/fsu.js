@@ -23,20 +23,24 @@ function copyFile (source, target, cb) {
 }
 function processCameraPictures(sourceFolder, destFolderRoot, extFilter) {
     fs.readdir(sourceFolder, function (err, list) {
-        if (typeof extFilter === 'undefined') {
-            console.log('Extesion does not set');
-            list.forEach(function (value) {
-                console.log(value);
-                var file = sourceFolder + '/' + value;
-                fs.stat(file, generate_callback(file));
-            });
+        if (err){
+            console.log(err);
         } else {
-            console.log(list);
-            list.filter(extension).forEach(function (value) {
-                console.log(value);
-                var file = sourceFolder + '/' + value;
-                fs.stat(file, generate_callback(file));
-            });
+            if (typeof extFilter === 'undefined') {
+                console.log('Extesion does not set');
+                list.forEach(function (value) {
+                    console.log(value);
+                    var file = sourceFolder + '/' + value;
+                    fs.stat(file, generate_callback(file));
+                });
+            } else {
+                console.log(list);
+                list.filter(extension).forEach(function (value) {
+                    console.log(value);
+                    var file = sourceFolder + '/' + value;
+                    fs.stat(file, generate_callback(file));
+                });
+            }
         }
     });
     function generate_callback(file) {
