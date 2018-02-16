@@ -51,10 +51,12 @@ picSel2.watch('C:/watch/cam2','C:\\Users\\amihailichenko\\Desktop\\NodeJs tests\
 */
 
 var fsu = require('./utils/fsu');
+
 var
     sourceFolder = '/usr/src/cameraServer/web-camera-in/camera2',
     destFolderRoot = '/usr/src/cameraServer/web-camera-storage/camera2',
     extension = 'jpg';
+
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
 var picSel1 = require('./utils/PictureSelector');
 picSel1.watch(sourceFolder, destFolderRoot, extension);

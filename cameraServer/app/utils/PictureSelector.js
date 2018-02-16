@@ -2,7 +2,7 @@ var watchr = require('watchr');
 var fs = require('fs');
 var fsu = require('./fsu');
 module.exports = {
-    watch: function (path, dest, ext) {
+    watch: function (path, dest, ext, cb) {
         function next (err) {
             if ( err )  return console.log('watch failed on', path, 'with error', err);
             console.log('watch successful on', path);
@@ -14,7 +14,7 @@ module.exports = {
                     break;
                 case 'create':
                     console.log('the file', fullPath, 'was created', currentStat);
-                    fsu.processCameraPictures(path, dest, ext);
+                    cb(fullPath, dest, ext);
                     break;
                 case 'delete':
                     // console.log('the file', fullPath, 'was deleted', previousStat);
