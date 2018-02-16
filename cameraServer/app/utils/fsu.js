@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path'); //require node path module (a couple of tools for reading path names)
 
 module.exports.copyFile = copyFile;
+module.exports.ensureExists = ensureExists;
 module.exports.makeDestinationFolder = makeDestinationFolder;
 module.exports.processCameraPictures = processCameraPictures;
 
@@ -70,13 +71,6 @@ function processCameraPictures(sourceFolder, destFolderRoot, extFilter) {
     });
     function generate_callback(file) {
         return function(err, stats) {
-            /*
-            console.log(sourceFolder);
-            console.log(destFolderRoot);
-            console.log(extFilter);
-            console.log(file);
-            console.log(stats.isFile());
-            */
             if (stats.isFile()) {
                 var fileName = path.basename(file);
                 var dest = makeDestinationFolder(file);

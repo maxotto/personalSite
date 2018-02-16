@@ -59,13 +59,46 @@ var
 
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
 var picSel1 = require('./utils/PictureSelector');
-picSel1.watch(sourceFolder, destFolderRoot, extension);
+picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
+    var fileName = path.basename(file);
+    var dest = fsu.makeDestinationFolder(file, destFolderRoot);
+    console.log("Need to copy file "+file+" to "+dest+'.');
+    fsu.copyFile(file, dest + '/' + fileName,
+        function(err) {
+            if(err) {
+                console.log(err);
+            }
+        });
+
+    fs.unlink(file, function(error) {
+        if (error) {
+            throw error;
+        }
+        console.log('File ' + file + ' deleted.');
+    });
+});
 
 sourceFolder = '/usr/src/cameraServer/web-camera-in/camera1';
 destFolderRoot = '/usr/src/cameraServer/web-camera-storage/camera1';
 extension = 'jpg';
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
 var picSel2 = require('./utils/PictureSelector');
-picSel2.watch(sourceFolder, destFolderRoot, extension);
+picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
+    var fileName = path.basename(file);
+    var dest = fsu.makeDestinationFolder(file, destFolderRoot);
+    console.log("Need to copy file "+file+" to "+dest+'.');
+    fsu.copyFile(file, dest + '/' + fileName,
+        function(err) {
+            if(err) {
+                console.log(err);
+            }
+        });
 
+    fs.unlink(file, function(error) {
+        if (error) {
+            throw error;
+        }
+        console.log('File ' + file + ' deleted.');
+    });
+});
 module.exports = app;

@@ -14,7 +14,7 @@ module.exports = {
                     break;
                 case 'create':
                     console.log('the file', fullPath, 'was created', currentStat);
-                    cb(fullPath, dest, ext);
+                    cb(fullPath, dest);
                     break;
                 case 'delete':
                     // console.log('the file', fullPath, 'was deleted', previousStat);
