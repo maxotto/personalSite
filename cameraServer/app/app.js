@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -69,6 +70,12 @@ picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolde
                 console.log(err);
             }
         });
+    fsu.copyFile(file, destFolderRoot + '/' + 'last.jpg',
+        function(err) {
+            if(err) {
+                console.log(err);
+            }
+        });
 
     fs.unlink(file, function(error) {
         if (error) {
@@ -88,6 +95,12 @@ picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolde
     var dest = fsu.makeDestinationFolder(file, destFolderRoot);
     console.log("Need to copy file "+file+" to "+dest+'.');
     fsu.copyFile(file, dest + '/' + fileName,
+        function(err) {
+            if(err) {
+                console.log(err);
+            }
+        });
+    fsu.copyFile(file, destFolderRoot + '/' + 'last.jpg',
         function(err) {
             if(err) {
                 console.log(err);
