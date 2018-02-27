@@ -10,10 +10,11 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "fs": "0.0.1-security",
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5",
     "twig": "~0.10.3",
-    "fs": "0.0.1-security",
+    "videoshow": "^0.1.11",
     "watchr": "^4.0.1"
   }
 }
