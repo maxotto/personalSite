@@ -1,7 +1,10 @@
 var fs = require('fs');
 var path = require('path'); //require node path module (a couple of tools for reading path names)
+const ABSPATH = path.dirname(process.mainModule.filename); // Absolute path to our app directory
 
 module.exports.copyFile = copyFile;
+module.exports.ensureExists = ensureExists;
+module.exports.listDir = listDir;
 module.exports.makeDestinationFolder = makeDestinationFolder;
 module.exports.processCameraPictures = processCameraPictures;
 
@@ -127,4 +130,33 @@ function processCameraPictures(sourceFolder, destFolderRoot, extFilter) {
         return extName === '.' + extFilter;
     }
 }
+
+function listDir(path){
+    var files = fs.readdirSync( ABSPATH + path ); // You can also use the async method
+    var filesWithStats = [];
+    if( files.length > 1 ) {
+        var sorted = files.sort(function(a, b){
+            var s1 = fs.statSync(ABSPATH + path + a);
+            var s2 = fs.statSync(ABSPATH + path + b);
+            return s1.ctime < s2.ctime;
+        });
+        sorted.forEach(function(file) {
+            filesWithStats.push({
+                filename: file,
+                date: new Date(fs.statSync(ABSPATH + path + file).ctime),
+                path: path + file
+            });
+        });
+    } else {
+        files.forEach(function(file) {
+            filesWithStats.push({
+                filename: file,
+                date: new Date(fs.statSync(ABSPATH + path + file).ctime),
+                path: path + file
+            });
+        });
+    }
+    return filesWithStats;
+}
+
 

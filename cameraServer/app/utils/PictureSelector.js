@@ -13,7 +13,7 @@ module.exports = {
                     // console.log('the file', fullPath, 'was updated', currentStat, previousStat);
                     break;
                 case 'create':
-                    console.log('the file', fullPath, 'was created', currentStat);
+                    //console.log('the file', fullPath, 'was created', currentStat);
                     cb(fullPath, dest, ext);
                     break;
                 case 'delete':
