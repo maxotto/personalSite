@@ -73,13 +73,6 @@ function processCameraPictures(sourceFolder, destFolderRoot, extFilter) {
     });
     function generate_callback(file) {
         return function(err, stats) {
-            /*
-            console.log(sourceFolder);
-            console.log(destFolderRoot);
-            console.log(extFilter);
-            console.log(file);
-            console.log(stats.isFile());
-            */
             if (stats.isFile()) {
                 var fileName = path.basename(file);
                 var dest = makeDestinationFolder(file);
