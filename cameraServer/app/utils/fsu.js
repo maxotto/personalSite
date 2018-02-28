@@ -3,8 +3,8 @@ var path = require('path'); //require node path module (a couple of tools for re
 const ABSPATH = path.dirname(process.mainModule.filename); // Absolute path to our app directory
 
 module.exports.copyFile = copyFile;
-module.exports.ensureExists = ensureExists;
 module.exports.listDir = listDir;
+module.exports.ensureExists = ensureExists;
 module.exports.makeDestinationFolder = makeDestinationFolder;
 module.exports.processCameraPictures = processCameraPictures;
 

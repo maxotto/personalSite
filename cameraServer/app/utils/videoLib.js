@@ -1,11 +1,6 @@
 var videoshow = require('videoshow');
-const fs = require('fs');
+var fs = require('fs');
 
-module.exports.createVideoBFromPath = createVideoBFromPath;
-module.exports.createVideoBFromImage = createVideoBFromImage;
-module.exports.concatVideo = concatVideo;
-module.exports.mergeVideo = mergeVideo;
-module.exports.videoOptions = videoOptions;
 var videoOptions = {
     fps: 25,
     loop: 0.2, // seconds
@@ -16,13 +11,13 @@ var videoOptions = {
     size: '1920x1080',
     // audioBitrate: '128k',
     // audioChannels: 2,
-    format: 'mp4',
+    format: 'mp4'
     // pixelFormat: 'yuv420p'
 };
 function mergeVideo(mainVideo, newVideos, outVideo, cb){
-    var fluent_ffmpeg = require("fluent-ffmpeg");
+    'use strict';
     var images = [mainVideo];
-    newVideos.forEach(function(fileName, index){
+    newVideos.forEach(function (fileName, index){
         images.push(fileName);
     });
     var mergedVideo = videoshow.ffmpeg();
@@ -42,16 +37,16 @@ function mergeVideo(mainVideo, newVideos, outVideo, cb){
         });
 }
 function concatVideo(mainVideo, newVideos, delNewAfter, cb){
-
+    'use strict';
     console.log(mainVideo);
     console.log(newVideos);
     var images = [mainVideo];
-    newVideos.forEach(function(fileName, index){
-       images.push(fileName);
+    newVideos.forEach(function(fileName, index) {
+        images.push(fileName);
     });
     var listFileName = 'list.txt', fileNames = '';
 // ffmpeg -f concat -i mylist.txt -c copy output
-    images.forEach(function(fileName, index){
+    images.forEach(function (fileName, index) {
         fileNames = fileNames + 'file ' + "'" + fileName + "'\n";
     });
     fs.writeFileSync(listFileName, fileNames);
@@ -60,16 +55,17 @@ function concatVideo(mainVideo, newVideos, delNewAfter, cb){
         .inputOptions(['-f concat', '-safe 0'])
         .outputOptions(['-vcodec copy', '-acodec copy'])
         .save(mainVideo)
-        .on('end',function(stdout, stderr) {
+        .on('end', function(stdout, stderr) {
             console.log('Transcoding succeeded !');
-            if(delNewAfter){
+            if(delNewAfter) {
                 console.log('Will delete new files !');
             }
             cb();
         });
 }
 
-function createVideoBFromPath(picFolder, outFile, cb){
+function createVideoBFromPath(picFolder, outFile, cb) {
+    'use strict';
     var images = [];
     var isNoFile = true;
     fs.readdirSync(picFolder).forEach(function(file) {
@@ -89,13 +85,14 @@ function createVideoBFromPath(picFolder, outFile, cb){
             // console.log('->', data.percent);
         })
         .on('error', function (err) {
-            console.error('Error:', err)
+            console.error('Error:', err);
         })
         .on('end', function (output) {
             cb(output);
         });
 }
-function createVideoBFromImage(file, outFile, cb){
+function createVideoBFromImage(file, outFile, cb) {
+    'use strict';
     var images = [file];
     videoshow(images, videoOptions)
         .save(outFile)
@@ -106,9 +103,14 @@ function createVideoBFromImage(file, outFile, cb){
             // console.log('->', data.percent);
         })
         .on('error', function (err) {
-            console.error('Error:', err)
+            console.error('Error:', err);
         })
         .on('end', function (output) {
             cb(output);
         });
 }
+module.exports.createVideoBFromPath = createVideoBFromPath;
+module.exports.createVideoBFromImage = createVideoBFromImage;
+module.exports.concatVideo = concatVideo;
+module.exports.mergeVideo = mergeVideo;
+module.exports.videoOptions = videoOptions;

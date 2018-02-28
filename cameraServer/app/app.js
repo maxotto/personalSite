@@ -19,7 +19,7 @@ app.set('view engine', 'twig');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -27,21 +27,24 @@ app.use('/', index);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+    'use strict';
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use(function (err, req, res, next) {
+    'use strict';
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development'
+        ? err
+        : {};
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 /*
@@ -61,23 +64,21 @@ var
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
 var picSel1 = require('./utils/PictureSelector');
 picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
+    'use strict';
     var fileName = path.basename(file);
     var dest = fsu.makeDestinationFolder(file, destFolderRoot);
-    console.log("Need to copy file "+file+" to "+dest+'.');
-    fsu.copyFile(file, dest + '/' + fileName,
-        function(err) {
-            if(err) {
-                console.log(err);
-            }
-        });
-    fsu.copyFile(file, destFolderRoot + '/' + 'last.jpg',
-        function(err) {
-            if(err) {
-                console.log(err);
-            }
-        });
-
-    fs.unlink(file, function(error) {
+    console.log("Need to copy file " + file + " to " + dest + '.');
+    fsu.copyFile(file, dest + '/' + fileName, function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+    fsu.copyFile(file, destFolderRoot + '/' + 'last.jpg', function (err) {
+        if(err) {
+            console.log(err);
+        }
+    });
+    fs.unlink(file, function (error) {
         if (error) {
             throw error;
         }
@@ -91,23 +92,21 @@ extension = 'jpg';
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
 var picSel2 = require('./utils/PictureSelector');
 picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
+    'use strict';
     var fileName = path.basename(file);
     var dest = fsu.makeDestinationFolder(file, destFolderRoot);
-    console.log("Need to copy file "+file+" to "+dest+'.');
-    fsu.copyFile(file, dest + '/' + fileName,
-        function(err) {
-            if(err) {
-                console.log(err);
-            }
-        });
-    fsu.copyFile(file, destFolderRoot + '/' + 'last.jpg',
-        function(err) {
-            if(err) {
-                console.log(err);
-            }
-        });
-
-    fs.unlink(file, function(error) {
+    console.log("Need to copy file " + file + " to " + dest + '.');
+    fsu.copyFile(file, dest + '/' + fileName, function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+    fsu.copyFile(file, destFolderRoot + '/' + 'last.jpg', function (err) {
+        if(err) {
+            console.log(err);
+        }
+    });
+    fs.unlink(file, function (error) {
         if (error) {
             throw error;
         }
