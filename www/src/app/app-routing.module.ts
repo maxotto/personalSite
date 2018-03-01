@@ -12,6 +12,7 @@ const routes: Routes = [
     { path: 'about', loadChildren: './pages/about/about.module#AboutModule'},
     { path: 'gallery', loadChildren: './pages/photo-gallery/photo-gallery.module#PhotoGalleryModule', canLoad: [AuthGuard]  },
     { path: 'tmonitor', loadChildren: './pages/temp-monitor/temp-monitor.module#TempMonitorModule', canLoad: [AuthGuard]  },
+    { path: 'ipcamera', loadChildren: './pages/ipcamera/ipcamera.module#IpcameraModule', canLoad: [AuthGuard]  },
     { path: 'not-found', component: NotFoundComponent},
     { path: '**', redirectTo: 'not-found' }
 ];
