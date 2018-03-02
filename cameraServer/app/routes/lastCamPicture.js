@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
     console.log(req.query.id);
     //res.send('Response send to client::'+req.query.id);
     var options = {
-        root: __dirname + '/../../data/',
+        root: __dirname + '/../../web-camera-storage/',
         dotfiles: 'deny',
         headers: {
             'x-timestamp': Date.now(),

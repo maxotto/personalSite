@@ -1,8 +1,6 @@
 var express = require('express');
-var parameters = require('config/parameters');
 var path = require('path');
 var fs = require('fs');
-var ftpU = require('utils/ftpu');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -67,7 +65,10 @@ var
 
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
 var picSel1 = require('./utils/PictureSelector');
-var ftpConfig = parameters.ftpConfig;
+var ftpU = require('./utils/ftpu');
+var params = require('./config/parameters');
+var ftpConfig = params.ftpConfig;
+// console.log(ftpConfig);
 picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
     'use strict';
     var fileName = path.basename(file);
@@ -82,7 +83,7 @@ picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolde
         if(err) {
             console.log(err);
         }
-        ftpU.ftpPut(ftpConfig,destFolderRoot + '/' + 'last.jpg','/htdocs/mikhailichenko.su/www/assets/', 'camera1.jpg', function(err){
+        ftpU.ftpPut(ftpConfig, destFolderRoot + '/' + 'last.jpg','/htdocs/mikhailichenko.su/www/assets/', 'camera2.jpg', function(err){
             if(err) throw err;
         });
     });
@@ -113,7 +114,7 @@ picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolde
         if(err) {
             console.log(err);
         }
-        ftpU.ftpPut(ftpConfig,destFolderRoot + '/' + 'last.jpg','/htdocs/mikhailichenko.su/www/assets/', 'camera2.jpg', function(err){
+        ftpU.ftpPut(ftpConfig, destFolderRoot + '/' + 'last.jpg', '/htdocs/mikhailichenko.su/www/assets/', 'camera1.jpg', function(err){
             if(err) throw err;
         });
     });
