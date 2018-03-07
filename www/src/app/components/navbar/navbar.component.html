@@ -18,6 +18,9 @@
           <a class="nav-link" routerLink="/tmonitor"  routerLinkActive="active"><fa name="thermometer-half"></fa> Мониторинг температуры </a>
         </li>
         <li *ngIf="isLogged()" class="nav-item">
+          <a class="nav-link" routerLink="/ipcamera"  routerLinkActive="active"><fa name="images"></fa> Мониторинг обстановки </a>
+        </li>
+        <li *ngIf="isLogged()" class="nav-item">
           <a class="nav-link" routerLink="/about"  routerLinkActive="active"><fa name="question-circle"></fa> О проекте </a>
         </li>
       </ul>
