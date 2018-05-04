@@ -16,12 +16,14 @@ export class TempMonitorComponent implements OnInit, OnDestroy {
   interval: any;
   timescale = 30;
   days = 3;
+  height = 800;
   constructor(private tss: ThingSpeakService) {
     this.timescale = GlobalParams.THINGSPEAK_API_TIMESCALE;
     this.days = GlobalParams.THINGSPEAK_API_DAYS;
   }
 
   ngOnInit() {
+    this.height = window.innerHeight - 245;
     this.updateData();
     this.interval = setInterval(() => {
       const date = new Date();
@@ -31,7 +33,12 @@ export class TempMonitorComponent implements OnInit, OnDestroy {
       }
     }, 60000);
   }
-
+  onResize(event) {
+    // console.log(event);
+    // console.log(event.target);
+    this.height = event.target.innerHeight - 245;
+    this.chart.resize({height: event.target.innerHeight - 245});
+  }
   ngOnDestroy() {
     clearInterval(this.interval);
   }

@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { GlobalParams } from '../../params';
 import { JwtHelper } from '../jwt/jwtHelper';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,7 +17,7 @@ export class AuthenticationService {
     public user: string;
     private apiURL: string;
 
-    constructor( private httpClient: HttpClient, @Inject(Window) private _window: Window) {
+    constructor( private httpClient: HttpClient, @Inject(Window) private _window: Window, private router: Router) {
         // set token if saved in local storage
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.token = currentUser && currentUser.token;
@@ -29,20 +30,30 @@ export class AuthenticationService {
         this._authStateSource.next(number);
     }
     isLogged() {
+        console.log('IsLogged start');
+        if (!this.token) {
+          this.router.navigate(['/login']);
+          return false;
+        }
         const jwtHelper: JwtHelper = new JwtHelper();
         if ( !(jwtHelper.isTokenExpired(this.token)) ) {
-            this.changeAuthState(1);
-            return true;
+          console.log(jwtHelper.decodeToken(this.token));
+          this.changeAuthState(1);
+          return true;
         } else {
             // делаем попытку рефреша токенов
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const refreshed = this.refreshTokens(currentUser);
-            if (refreshed) {
+            const refreshed = this.refreshTokens(currentUser).subscribe(
+              result => {
                 this.changeAuthState(1);
                 return true;
-            }
-            this.logout();
-            return false;
+              },
+              error => {
+                console.log(error);
+                this.logout();
+              },
+              () => {console.log('refreshTokens complete')}
+            );
         }
     }
     login(username: string, password: string): Observable<any> {
@@ -50,10 +61,10 @@ export class AuthenticationService {
             'username': username,
             'password': password
         };
-        const url = this.apiURL + '/v1/api/login';
+        const url = this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/login';
         // const url = 'http://api.agmsite.com/login';
-        console.log('!!!!!');
-        console.log(url);
+        // console.log('!!!!!');
+        // console.log(url);
         return this.httpClient.post(url, body).map((response: any) => {
             // login successful if there's a jwt token in the response
             const accessToken = response && response.access;
@@ -89,13 +100,15 @@ export class AuthenticationService {
         const body = {
             'token': this.token,
         };
-        return this.httpClient.post(this.apiURL + '/v1/api/refresh', body).map((response: any) => {
+        return this.httpClient.post(
+          this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/refresh', body
+        ).map((response: any) => {
             const accessToken = response && response.access;
             // const username = accessToken && accessToken.username;
             const refreshToken = response && response.refresh;
             this.user = currentUser.user;
             const jwtHelper: JwtHelper = new JwtHelper();
-            if (accessToken) {
+            if (accessToken && refreshToken) {
                 this.token = accessToken;
                 this.refreshToken = refreshToken;
                 localStorage.setItem(
@@ -106,6 +119,7 @@ export class AuthenticationService {
                 return true;
             } else {
                 const errors = response && response.errors;
+                this.logout();
                 return false;
             }
         });

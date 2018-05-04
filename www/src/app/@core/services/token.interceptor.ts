@@ -11,11 +11,12 @@ export class TokenInterceptor implements HttpInterceptor {
     constructor(@Inject(Window) private _window: Window, private injector: Injector) {
         const hostname = this._window.location.hostname.replace(/^(www\.)/,'' );
         const apiURL = `${GlobalParams.API_SUBDOMEN}.${hostname}`;
+        const apiRoot = '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN;
         this.noTokenUrls = [
-          `api.agmsite.com/v1/api/login`,
+          `api.agmsite.com` + apiRoot + `/login`,
           'api.thingspeak.com/'
         ];
-        this.refreshTokenUrl = `${apiURL}/refresh`;
+        this.refreshTokenUrl = `${apiURL}` + apiRoot + `/refresh`;
     }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const url = request.url;
@@ -31,7 +32,7 @@ export class TokenInterceptor implements HttpInterceptor {
             // by https://github.com/angular/angular/issues/18224
             return next.handle(request);
         }
-        if (url.indexOf(this.refreshTokenUrl) >= 0) {
+      if (url.indexOf(this.refreshTokenUrl) >= 0) {
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${auth.getRefreshToken()}`

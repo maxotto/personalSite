@@ -8,7 +8,7 @@ const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'login', loadChildren: './pages/login/login.module#LoginModule' },
-    { path: 'map', loadChildren: './pages/google-maps/google-maps.module#GoogleMapsModule', canLoad: [AuthGuard] },
+    { path: 'map', loadChildren: './pages/google-maps/google-maps.module#GoogleMapsModule', canLoad: [AuthGuard] , canActivate: [AuthGuard] },
     { path: 'about', loadChildren: './pages/about/about.module#AboutModule'},
     { path: 'gallery', loadChildren: './pages/photo-gallery/photo-gallery.module#PhotoGalleryModule', canLoad: [AuthGuard]  },
     { path: 'tmonitor', loadChildren: './pages/temp-monitor/temp-monitor.module#TempMonitorModule', canLoad: [AuthGuard]  },
