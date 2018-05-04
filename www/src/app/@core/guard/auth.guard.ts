@@ -7,9 +7,10 @@ import { AuthenticationService } from '../services';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-    constructor(private router: Router, private auth: AuthenticationService) { }
+  constructor(private router: Router, private auth: AuthenticationService) { }
 
-  canLoad(route: Route): boolean {
+  canLoad(route: Route) {
+    // console.log('Can Load start');
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
       this.router.navigate(['/login']);
@@ -29,18 +30,18 @@ export class AuthGuard implements CanActivate {
       const refreshTokenIsExpired = jwtHelper.isTokenExpired(refreshToken);
       if (currentUser && !refreshTokenIsExpired) {
         // refresh both tokens at once
-        const r = this.auth.refreshTokens(currentUser);
-        if (r.subscribe()) {
-          return true;
-        }
-        return false;
+        return this.auth.refreshTokens(currentUser);
       } else {
+        this.auth.logout();
         this.router.navigate(['/login']);
-        return false;            }
+        return false;
+      }
     }
-
+    return false;
   }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+      // console.log('CanActivate start');
+      // return false;
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             this.router.navigate(['/login']);

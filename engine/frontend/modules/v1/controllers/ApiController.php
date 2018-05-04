@@ -43,6 +43,21 @@ class ApiController extends Controller
         }
 
     }
+    public function actionRefresh(){
+        $authHeader = Yii::$app->getRequest()->getHeaders()->get('Authorization');
+        $token=null;
+        if ($authHeader !== null && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
+            $requestToken = $matches[1];
+            $decodedToken=User::decodeJWT($requestToken);
+            //print_r($decodedToken); die;
+            $user = \common\models\User::findIdentityByAccessToken($requestToken);
+            $token = $user->getJwt();
+            $refreshToken = $user->getRefreshJwt();
+            // $decoded=User::decodeJWT($token);
+            //VarDumper::dump($decoded,10,true);
+            return ['user'=>$user->username,'access'=>$token, 'refresh'=>$refreshToken];
+        }
+    }
     public function actionGetmetadata(){
         $table=(isset($_GET['table']))?$_GET['table']:null;
         $out=[
