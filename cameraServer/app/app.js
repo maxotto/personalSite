@@ -64,12 +64,12 @@ var
     extension = 'jpg';
 
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
-var picSel1 = require('./utils/PictureSelector');
 var ftpU = require('./utils/ftpu');
 var params = require('./config/parameters');
 var ftpConfig = params.ftpConfig;
 // console.log(ftpConfig);
-picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
+var picSel2 = require('./utils/PictureSelector');
+picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
     'use strict';
     var fileName = path.basename(file);
     var dest = fsu.makeDestinationFolder(file, destFolderRoot);
@@ -94,13 +94,15 @@ picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolde
         console.log('File ' + file + ' deleted.');
     });
 });
+var makeVideo2 = require('./utils/makeVideo');
+makeVideo2.run(destFolderRoot, destFolderRoot + '/' + 'video.mp4');
 
 sourceFolder = '/usr/src/cameraServer/web-camera-in/camera1';
 destFolderRoot = '/usr/src/cameraServer/web-camera-storage/camera1';
 extension = 'jpg';
 fsu.processCameraPictures(sourceFolder, destFolderRoot, extension);
-var picSel2 = require('./utils/PictureSelector');
-picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
+var picSel1 = require('./utils/PictureSelector');
+picSel1.watch(sourceFolder, destFolderRoot, extension, function (file, destFolderRoot) {
     'use strict';
     var fileName = path.basename(file);
     var dest = fsu.makeDestinationFolder(file, destFolderRoot);
@@ -125,4 +127,6 @@ picSel2.watch(sourceFolder, destFolderRoot, extension, function (file, destFolde
         console.log('File ' + file + ' deleted.');
     });
 });
+var makeVideo1 = require('./utils/makeVideo');
+makeVideo1.run(destFolderRoot, destFolderRoot + '/' + 'video.mp4');
 module.exports = app;
