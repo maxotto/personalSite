@@ -1,5 +1,6 @@
 var videoshow = require('videoshow');
 var fs = require('fs');
+var path = require('path');
 
 var videoOptions = {
     fps: 25,
@@ -69,8 +70,11 @@ function createVideoBFromPath(picFolder, outFile, cb) {
     var images = [];
     var isNoFile = true;
     fs.readdirSync(picFolder).forEach(function(file) {
-        var fullName = picFolder + file;
-        images.push(fullName);
+        var fullName = picFolder + '/' + file;
+        // console.log(path.extname(fullName));
+        if(path.extname(fullName) === '.jpg'){
+            images.push(fullName);
+        }
         isNoFile = false;
     });
     if(isNoFile) {
@@ -103,6 +107,7 @@ function createVideoBFromImage(file, outFile, cb) {
             // console.log('->', data.percent);
         })
         .on('error', function (err) {
+            console.log(file);
             console.error('Error:', err);
         })
         .on('end', function (output) {

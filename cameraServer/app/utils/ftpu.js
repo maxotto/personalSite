@@ -2,13 +2,14 @@ var ftpClient = require('ftp');
 var fs = require('fs');
 function ftpPut(config, sourceFile, destFolder,destFileName, cb){
     var c = new ftpClient();
-    console.log(sourceFile);
     c.on('ready' ,function() {
-        console.log('connected');
+        console.log('Connected to FTP.');
 
         c.put(sourceFile, destFolder+destFileName, function(err){
             if (err) cb(err);
+            console.log('File sent by FTP.');
             c.end();
+            cb(null);
         })
 
     });
