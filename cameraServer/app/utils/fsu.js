@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path'); //require node path module (a couple of tools for reading path names)
 const ABSPATH = path.dirname(process.mainModule.filename); // Absolute path to our app directory
 
