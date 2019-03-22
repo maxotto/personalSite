@@ -18,7 +18,7 @@ module.exports = function(config) {
   this.outFolder =
     this.config.outRoot + "camera" + this.config.cameraNumber + "/";
   this.extFilter = this.config.extFilter;
-  this.videoFileName = "cam" + this.config.cameraNumber + "Video.mp4";
+  // this.videoFileName = "cam" + this.config.cameraNumber + "Video.mp4";
   this.log = function() {
     console.log("Camera " + this.config.cameraNumber + ": ", ...arguments);
   };
@@ -37,7 +37,14 @@ module.exports = function(config) {
           _this.log('Task ID is "' + task.id + '".');
           _this.processSingleFile(task, cb);
           break;
-        case "makeDayVideo":
+        case "makeDayVideoOnce":
+          _this.makeDayVideoOnce(function(){
+            cb(null, "Finish makeDayVideoOnce.");
+          });
+          break;
+        case "startMainCycle":
+          _this.startConcatVideoCycle();
+          cb(null, "Finish startMainCycle.");
           break;
         case "concatVideo":
           break;
@@ -96,8 +103,8 @@ module.exports = function(config) {
     _this.log("this.onceCount=", this.onceCount);
     if (found.length === 0) {
       // inFolder is empty. Just start concatinating cycle for new video files
-      _this.resume();
-      this.startConcatVideoCycle();
+      cb(null, 'Init is done.');
+      // this.startConcatVideoCycle();
     } else {
       this.foldersToMakeVideo = {};
       found.forEach(function(file) {
@@ -119,7 +126,7 @@ module.exports = function(config) {
           dest: destinationFile,
           delSource: true,
           savePic: true,
-          makeVideo: true,
+          makeVideo: false,
           ftpTransfer: {
             ftpDestFolder: '/htdocs/mikhailichenko.su/www/assets/',
             ftpPictureFileName: 'camera' + _this.config.cameraNumber + '.jpg',
@@ -132,7 +139,24 @@ module.exports = function(config) {
           }
         });
       });
-      // _this.log(_this.foldersToMakeVideo);
+      _this.queue.push({
+        action: 'makeDayVideoOnce'
+      }, function (err, result){
+        if( err ){
+          _this.log(err);
+        } else {
+          _this.log(result);
+        }
+      });
+      _this.queue.push({
+        action: 'startMainCycle'
+      }, function (err, result){
+        if( err ){
+          _this.log(err);
+        } else {
+          _this.log(result);
+        }
+      });
       cb(null, 'Init is done.');
     }
   };
@@ -146,18 +170,24 @@ module.exports = function(config) {
       this.log('Picture copy saved.')
     }
     if(task.makeVideo){
-      this.makeSingleVideo(file, () => {
+      this.makeSingleVideo(file, dest, () => {
         if(task.delSource){
           _fs.removeSync(file);
           this.log('Picture source deleted.')
         }
         cb(null, 'Process single file ' + file + ' finished');
       });
+    } else {
+      if(task.delSource){
+        _fs.removeSync(file);
+        this.log('Picture source deleted.')
+      }
+      cb(null, 'Process single file ' + file + ' finished');
     }
   };
 
-  this.makeSingleVideo = function(imageFileName, cb){
-    const imageInfo = _path.parse(imageFileName);
+  this.makeSingleVideo = function(imageFileName, destImageFile, cb){
+    const imageInfo = _path.parse(destImageFile);
     const tmpPath = _path.join(imageInfo.dir,'tmp');
     const videoFileName = _path.join(tmpPath,imageInfo.name + '.mp4');
     var _this = this;
@@ -171,6 +201,41 @@ module.exports = function(config) {
       _this.log(newFile+': new video file created.');
       cb() ;
     });
+  };
+
+  this.makeDayVideoOnce = function(cb){
+    var count = 0;
+    for (var ds in this.foldersToMakeVideo){
+      if(this.foldersToMakeVideo.hasOwnProperty(ds)){
+        count++;
+      }
+    }
+    if( count === 0){
+      cb();
+      // _this.startConcatVideoCycle();
+    } else {
+      var _this = this;
+      for (var dateStamp in this.foldersToMakeVideo){
+        var videoFileName = "cam" + this.config.cameraNumber + "_" + dateStamp + ".mp4"
+        if(this.foldersToMakeVideo.hasOwnProperty(dateStamp)){
+          // Delete TMP folder with single video if exist because all images went into day video by this function
+          var tmpFolderName = _path.join(this.outFolder,dateStamp,'tmp');
+          _fs.removeSync(tmpFolderName);
+          var dayVideoName = _path.join(this.outFolder, videoFileName);
+          var sourceFolder = _path.join(this.outFolder,dateStamp);
+          videoLib.createVideoBFromPath(sourceFolder, dayVideoName, function(output){
+            _this.log(output);
+            count--;
+            if(count === 0){
+              _this.log('Day videos are created');
+              cb();
+              // _this.startConcatVideoCycle();
+            }
+          });
+          delete this.foldersToMakeVideo[dateStamp];
+        }
+      }
+    }
   };
 
   this.makeDestinationFolder = function(file) {
@@ -195,9 +260,85 @@ module.exports = function(config) {
     const _this = this;
     setTimeout(function() {
       // _this.concatVideo();
-      // _this.startConcatVideoCycle();
-      _this.log("Concat video cycle run.");
+      _this.startConcatVideoCycle();
+      _this.log("Inside video cycle.");
     }, _this.config.videoConcatPeriod);
   };
+
+  this.concatVideo = function(){
+    this.log('Do concat video', this.foldersToMakeVideo);
+    var _this = this;
+    for (var dateStamp in this.foldersToMakeVideo){
+      if(this.foldersToMakeVideo.hasOwnProperty(dateStamp)){
+        this.ensureDayVideoExists(dateStamp, function(ds){
+          _this.concatVideoInFolder(ds);
+        });
+        delete this.foldersToMakeVideo[dateStamp];
+      }
+    }
+  };
+
+  this.ensureDayVideoExists = function(dateStamp, cb){
+    var videoFileName = "cam" + this.config.cameraNumber + "_" + dateStamp + ".mp4"
+    var destVideoName = _path.join(this.outFolder, videoFileName);
+    if(_fs.existsSync(destVideoName)){
+      cb(dateStamp);
+    } else {
+      var sourceFolder = _path.join(this.outFolder,dateStamp);
+      var _this = this;
+      videoLib.createVideoBFromPath(sourceFolder, destVideoName, function(output){
+        /*
+        var tmpFolderName = _path.join(_this.outFolder,dateStamp,'tmp');
+        if(_fs.existsSync(tmpFolderName)){
+            _fs.removeSync(tmpFolderName);
+        }
+        */
+        console.log('New day video is created: ' + destVideoName);
+        cb(dateStamp);
+      });
+    }
+  };
+
+  this.concatVideoInFolder = function(dateStamp){
+    var _this = this;
+    var sourceVideoFolder = _path.join(this.outFolder,dateStamp,'tmp');
+    var tmpVideoName = _path.join(sourceVideoFolder,'tmp.mp4');
+    _fs.readdir(sourceVideoFolder, function (err, list) {
+      if (err){
+        _this.log('No TMP folder to scan: ' + tmpVideoName);
+      } else {
+        var newVideo = [];
+        list.forEach(function (value) {
+          newVideo.push(_path.join(sourceVideoFolder, value));
+        });
+        console.log(newVideo);
+        if(newVideo.length >0){
+          var destVideoName = _path.join(_this.outFolder,dateStamp,_this.videoFileName);
+          videoLib.mergeVideo(destVideoName, newVideo, tmpVideoName, function(){
+            _fs.unlink(destVideoName, function(error) {
+              if (error) {
+                throw error;
+              }
+              _fs.rename(tmpVideoName,destVideoName, function(error){
+                if (error) {
+                  throw error;
+                }
+                console.log('File ' + destVideoName + ' rewritten.');
+              });
+            });
+            newVideo.forEach(function(file){
+              _fs.unlink(file, function(error) {
+                if (error) {
+                  throw error;
+                }
+                console.log('File ' + file + ' deleted.');
+              });
+            })
+          });
+        }
+      }
+    });
+  };
+
   return this;
 };
