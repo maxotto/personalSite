@@ -249,7 +249,7 @@ module.exports = function(config){
                 cb(dateStamp);
             });
         }
-    };    
+    };
 
     this.concatVideoInFolder = function(dateStamp){
         var _this = this;
@@ -291,7 +291,7 @@ module.exports = function(config){
             }
         });
     };
-    
+
     this.makeSingleVideo = function(imageFileName, cb){
         var imageInfo = _path.parse(imageFileName);
         var tmpPath = _path.join(imageInfo.dir,'tmp');
