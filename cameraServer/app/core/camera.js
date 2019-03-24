@@ -89,7 +89,7 @@ module.exports = function(config) {
    */
   this.runInit = function(cb) {
     const found = [];
-    _walk.sync(this.inFolder, function(file, stat) {
+    _walk.sync(_path.resolve(this.inFolder), function(file, stat) {
       if (stat.isFile()) {
         found.push({
           fileFullName: file,
@@ -224,7 +224,7 @@ module.exports = function(config) {
           _fs.removeSync(tmpFolderName);
           const dayVideoName = _path.join(this.outFolder, videoFileName);
           const sourceFolder = _path.join(this.outFolder,dateStamp);
-          videoLib.createVideoBFromPath(sourceFolder, dayVideoName, function(output){
+          videoLib.createVideoBFromPath(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize, function(output){
             _this.log(output);
             count--;
             if(count === 0){

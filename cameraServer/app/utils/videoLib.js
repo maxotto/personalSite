@@ -65,7 +65,7 @@ function concatVideo(mainVideo, newVideos, delNewAfter, cb){
         });
 }
 
-function createVideoBFromPath(picFolder, outFile, cb) {
+function createVideoBFromPath(picFolder, outFile, batchSize, cb) {
     'use strict';
     var images = [];
     var isNoFile = true;

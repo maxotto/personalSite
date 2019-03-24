@@ -1,9 +1,10 @@
 var config1 = {
-    inRoot: 'C:/web_camera_in/',
-    outRoot: 'C:/web_camera_data/',
+    inRoot: '../web_camera_in/',
+    outRoot: '../data/',
     cameraNumber: 2,
     extFilter: 'jpg',
     videoConcatPeriod: 60*1000,
+    dayVideoCreateBatchSize: 100
     /* ftpConfig: {
         host: 'srv038.infobox.ru',
         port: 21,
@@ -16,8 +17,8 @@ var camera1 = new (require('./core/camera'))(config1);
 camera1.watch();
 
 var config2 = {
-    inRoot: 'C:/mikhailichenko.site/cameraServer/web-camera-in/',
-    outRoot: 'C:/mikhailichenko.site/cameraServer/data/',
+    inRoot: '../web_camera_in/',
+    outRoot: '../data/',
     cameraNumber: 2,
     extFilter: 'jpg',
     videoConcatPeriod: 60*1000,
