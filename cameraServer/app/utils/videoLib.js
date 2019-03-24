@@ -1,6 +1,7 @@
 var videoshow = require('videoshow');
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
+const queue = require("better-queue", { concurrent: 1 });
 
 var videoOptions = {
     fps: 25,
@@ -22,9 +23,7 @@ function mergeVideo(mainVideo, newVideos, outVideo, cb){
         images.push(fileName);
     });
     var mergedVideo = videoshow.ffmpeg();
-    var videoNames = images;
-
-    videoNames.forEach(function(videoName){
+    images.forEach(function(videoName){
         mergedVideo = mergedVideo.addInput(videoName);
     });
 
@@ -65,7 +64,7 @@ function concatVideo(mainVideo, newVideos, delNewAfter, cb){
         });
 }
 
-function createVideoBFromPath(picFolder, outFile, batchSize, cb) {
+function createVideoBFromPath(picFolder, outFile, cb) {
     'use strict';
     var images = [];
     var isNoFile = true;
@@ -95,6 +94,100 @@ function createVideoBFromPath(picFolder, outFile, batchSize, cb) {
             cb(output);
         });
 }
+
+function createVideoBFromPathBatch(picFolder, outFile, batchSize, cb) {
+    'use strict';
+    var images = [];
+    var isNoFile = true;
+    var batches = [];
+    var counter = 0;
+    fs.readdirSync(picFolder).forEach(function(file) {
+        counter++;
+        var fullName = picFolder + '/' + file;
+        // console.log(path.extname(fullName));
+        // TODO check file is really picture
+        if(path.extname(fullName) === '.jpg'){
+            images.push(fullName);
+        }
+        if(counter === batchSize){
+            batches.push(images);
+            images = [];
+            counter = 0;
+        }
+        isNoFile = false;
+    });
+    batches.push(images);
+    if(isNoFile) {
+        batches.push(['blank.jpg']);
+    }
+    // console.log({batches});
+    var batchesCount = batches.length;
+    var readyBatches = 0;
+    var mainVideo;
+    var videoToMerge = [];
+    batches.forEach((batch, i) => {
+        var batchFileName = createBatchFileName(outFile,i);
+        if(i === 0){
+            mainVideo = batchFileName;
+        } else {
+            videoToMerge.push(batchFileName);
+        }
+        videoshow(batch, videoOptions)
+          .save(batchFileName)
+          .on('start', function (command) {
+              console.log(batchFileName,'ffmpeg process started:', command)
+          })
+          .on('progress', function (data) {
+              console.log(batchFileName,'->', data.percent);
+          })
+          .on('error', function (err) {
+              readyBatches++;
+              console.error(batchFileName,'Error:', err);
+          })
+          .on('end', function (output) {
+              readyBatches++;
+              if(readyBatches === batchesCount){
+                  console.log('Files to merge', videoToMerge);
+                  if(videoToMerge.length === 0){
+                      fs.move(mainVideo, outFile, err => {
+                          if(err){
+                              cb(err);
+                          } else {
+                              cb('createVideoBFromPathBatch (1 batch exists) ready: ' + outFile + '.');
+                          }
+                      })
+                  } else {
+                      mergeVideo(mainVideo, videoToMerge, outFile, res => {
+                          // delete batch files
+                          fs.remove(mainVideo, err => {
+                              if(err){
+                                  throw err;
+                              }
+                              let delCount = 0;
+                              const toDelCount = videoToMerge.length;
+                              videoToMerge.forEach(fileToDel => {
+                                  fs.remove(fileToDel, err =>{
+                                      if(err){
+                                          throw err;
+                                      }
+                                      delCount++;
+                                      if(delCount === toDelCount){
+                                          cb('createVideoBFromPathBatch (normal batches) ready: ' + outFile + '.');
+                                      }
+                                  })
+                              })
+                          });
+                      });
+                  }
+              }
+          });
+    });
+}
+function createBatchFileName(mainFile, batchNumber){
+    var p = path.parse(mainFile);
+    return path.resolve(p.dir, p.name + "_batch_" + String(batchNumber) + p.ext);
+}
+
 function createVideoBFromImage(file, outFile, cb) {
     'use strict';
     var images = [file];
@@ -115,7 +208,34 @@ function createVideoBFromImage(file, outFile, cb) {
         });
 }
 module.exports.createVideoBFromPath = createVideoBFromPath;
+module.exports.createVideoBFromPathBatch = createVideoBFromPathBatch;
 module.exports.createVideoBFromImage = createVideoBFromImage;
 module.exports.concatVideo = concatVideo;
 module.exports.mergeVideo = mergeVideo;
 module.exports.videoOptions = videoOptions;
+
+/*
+function waitFor(ms){
+return new Promise(r => setTimeout(r, ms));
+}
+console.log('start');
+const a = [1,2,3,4,5,6]
+var count = 21;
+async function doit(){
+    console.log('inside doit');
+    await a.reduce(async (promise, num) => {
+        await promise;
+        await waitFor(500);
+        console.log(num + (++count));
+    }, Promise.resolve());
+}
+async function start(){
+    await doit();
+    console.log('finish');
+    return 'Done that!'
+}
+start().then(res=>{
+    console.log(res);
+});
+
+*/

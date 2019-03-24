@@ -224,7 +224,7 @@ module.exports = function(config) {
           _fs.removeSync(tmpFolderName);
           const dayVideoName = _path.join(this.outFolder, videoFileName);
           const sourceFolder = _path.join(this.outFolder,dateStamp);
-          videoLib.createVideoBFromPath(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize, function(output){
+          videoLib.createVideoBFromPathBatch(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize, function(output){
             _this.log(output);
             count--;
             if(count === 0){

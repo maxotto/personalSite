@@ -4,7 +4,7 @@ var config1 = {
     cameraNumber: 2,
     extFilter: 'jpg',
     videoConcatPeriod: 60*1000,
-    dayVideoCreateBatchSize: 100
+    dayVideoCreateBatchSize: 50
     /* ftpConfig: {
         host: 'srv038.infobox.ru',
         port: 21,
