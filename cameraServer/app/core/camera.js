@@ -224,6 +224,17 @@ module.exports = function(config) {
           _fs.removeSync(tmpFolderName);
           const dayVideoName = _path.join(this.outFolder, videoFileName);
           const sourceFolder = _path.join(this.outFolder,dateStamp);
+
+          videoLib.startCreateVideoBFromPathBatch(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize).then(res=>{
+            _this.log(res);
+            count--;
+            if(count === 0){
+              _this.log('Day videos are created');
+              cb();
+              // _this.startConcatVideoCycle();
+            }
+          });
+          /*
           videoLib.createVideoBFromPathBatch(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize, function(output){
             _this.log(output);
             count--;
@@ -233,6 +244,7 @@ module.exports = function(config) {
               // _this.startConcatVideoCycle();
             }
           });
+          */
           delete this.foldersToMakeVideo[dateStamp];
         }
       }
