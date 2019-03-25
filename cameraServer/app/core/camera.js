@@ -1,16 +1,28 @@
 const _fs = require("fs-extra");
-const videoLib = require("../utils/videoLib");
+const videoLib = new require("../utils/videoLib");
 const picSel = require("../utils/PictureSelector");
 const _fsu = require("../utils/fsu");
 const _path = require("path"); //require node path module (a couple of tools for reading path names)
 const _walk = require("walkdir");
 const _ftpU = require("../utils/ftpu");
 const _queue = require("better-queue", { concurrent: 1 });
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, printf } = format;
 
 module.exports = function(config) {
   const _this = this;
   // initilization
   this.config = config;
+  this.videoLib = require("../utils/videoLibEx")(config);
+  this.logger = require('../utils/logger')(config);
+  this.logger.log({
+    level: 'info',
+    message: 'What time is the testing at?'
+  });
+  this.logger.log({
+    level: 'error',
+    message: 'error'
+  });
   this.onceCount = 0;
   this.foldersToMakeVideo = {};
   this.inFolder =
@@ -193,7 +205,7 @@ module.exports = function(config) {
     const videoFileName = _path.join(tmpPath,imageInfo.name + '.mp4');
     const _this = this;
     _fs.ensureDirSync(tmpPath);
-    videoLib.createVideoBFromImage(imageFileName, videoFileName, function(newFile){
+    this.videoLib.createVideoBFromImage(imageFileName, videoFileName, function(newFile){
       const dateStamp = _path.basename(newFile).substring(0,8);
       if(!_this.foldersToMakeVideo.hasOwnProperty(dateStamp)){
         _this.foldersToMakeVideo[dateStamp] = [imageFileName];
@@ -225,7 +237,7 @@ module.exports = function(config) {
           const dayVideoName = _path.join(this.outFolder, videoFileName);
           const sourceFolder = _path.join(this.outFolder,dateStamp);
 
-          videoLib.startCreateVideoBFromPathBatch(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize).then(res=>{
+          this.videoLib.startCreateVideoBFromPathBatch(sourceFolder, dayVideoName, this.config.dayVideoCreateBatchSize).then(res=>{
             _this.log(res);
             count--;
             if(count === 0){

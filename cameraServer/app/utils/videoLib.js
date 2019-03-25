@@ -1,3 +1,5 @@
+// todo recreate module to pass config for better logging
+
 var videoshow = require('videoshow');
 var fs = require('fs-extra');
 var path = require('path');
