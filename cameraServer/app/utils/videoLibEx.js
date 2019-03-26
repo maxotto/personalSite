@@ -19,6 +19,23 @@ class VideoLib{
     };
   };
 
+  createVideoBFromImage(file, outFile, cb) {
+    var images = [file];
+    videoshow(images, videoOptions)
+      .save(outFile)
+      .on('start', function (command) {
+        //console.log('ffmpeg process started:', command)
+      })
+      .on('progress', function (data) {
+        // console.log('->', data.percent);
+      })
+      .on('error', function (err) {
+        log('Error:', err);
+      })
+      .on('end', function (output) {
+        cb(output);
+      });
+  }
 
 
   mergeVideo(mainVideo, newVideos, outVideo, cb){

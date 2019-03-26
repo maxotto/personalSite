@@ -15,10 +15,8 @@ module.exports = function(config) {
   this.logger = require('../utils/logger')(config);
   this.onceCount = 0;
   this.foldersToMakeVideo = {};
-  this.inFolder =
-    this.config.inRoot + "camera" + this.config.cameraNumber + "/";
-  this.outFolder =
-    this.config.outRoot + "camera" + this.config.cameraNumber + "/";
+  this.inFolder = _path.resolve(this.config.inRoot + "camera" + this.config.cameraNumber + "/");
+  this.outFolder = _path.resolve(this.config.outRoot + "camera" + this.config.cameraNumber + "/");
   this.extFilter = this.config.extFilter;
   // this.videoFileName = "cam" + this.config.cameraNumber + "Video.mp4";
   this.log = function() {
@@ -52,6 +50,10 @@ module.exports = function(config) {
           _this.startConcatVideoCycle();
           cb(null, "Finish startMainCycle.");
           break;
+        case 'addWatcher':
+          _this.addWatcher();
+          cb(null, "Watcher added.");
+          break;
         case "concatVideo":
           break;
         default:
@@ -60,6 +62,40 @@ module.exports = function(config) {
     }
     // cb("Task finished.");
   });
+
+  this.addWatcher = function(){
+    var _this = this;
+    var destFolderRoot = this.outFolder;
+    console.log('Set watcher for ' + this.inFolder);
+    picSel.watch(this.inFolder, destFolderRoot, 'jpg', function (changedFile, destFolderRoot) {
+      var fileName = _path.basename(changedFile);
+      var dest = _this.makeDestinationFolder(fileName);
+      console.log(dest);
+      console.log(fileName);
+      _this.log("Need to copy file " + changedFile + " to " + dest.destinationFile+ '.');
+
+      _this.queue.push({
+        action: 'singleFile',
+        id: fileName,
+        file: changedFile,
+        dest: dest.destinationFile,
+        delSource: true,
+        savePic: true,
+        makeVideo: true,
+        ftpTransfer: {
+          ftpDestFolder: '/htdocs/mikhailichenko.su/www/assets/',
+          ftpPictureFileName: 'camera' + _this.config.cameraNumber + '.jpg',
+        }
+      }, (err, result) => {
+        if( err ){
+          _this.log(err);
+        } else {
+          _this.log(result);
+        }
+      });
+
+    });
+  };
 
   this.resume = function() {
     _this.log("Queue resumed.");
@@ -108,7 +144,24 @@ module.exports = function(config) {
     // console.log({found});
     _this.log("this.onceCount=", this.onceCount);
     if (found.length === 0) {
-      // inFolder is empty. Just start concatinating cycle for new video files
+      _this.queue.push({
+        action: 'addWatcher'
+      }, function (err, result){
+        if( err ){
+          _this.log(err);
+        } else {
+          _this.log(result);
+        }
+      });
+      _this.queue.push({
+        action: 'startMainCycle'
+      }, function (err, result){
+        if( err ){
+          _this.log(err);
+        } else {
+          _this.log(result);
+        }
+      });
       cb(null, 'Init is done.');
       // this.startConcatVideoCycle();
     } else {
@@ -130,7 +183,7 @@ module.exports = function(config) {
           id: file.info.base,
           file: source,
           dest: destinationFile,
-          delSource: false,
+          delSource: true,
           savePic: true,
           makeVideo: false,
           ftpTransfer: {
@@ -145,6 +198,17 @@ module.exports = function(config) {
           }
         });
       });
+
+      _this.queue.push({
+        action: 'addWatcher'
+      }, function (err, result){
+        if( err ){
+          _this.log(err);
+        } else {
+          _this.log(result);
+        }
+      });
+
       _this.queue.push({
         action: 'makeDayVideoOnce'
       }, function (err, result){
@@ -154,6 +218,7 @@ module.exports = function(config) {
           _this.log(result);
         }
       });
+
       _this.queue.push({
         action: 'startMainCycle'
       }, function (err, result){
@@ -260,14 +325,14 @@ module.exports = function(config) {
   this.makeDestinationFolder = function(file) {
     const fileName = file;
     const destFolderName = fileName.substring(0, 8);
-    const newDestName = this.outFolder + destFolderName;
+    const newDestName = _path.join(this.outFolder, destFolderName);
     _fsu.ensureExists(newDestName, 0o777, function(err) {
       if (err) {
         throw err;
       } else {
       }
     });
-    const destinationFile = newDestName + "/" + fileName;
+    const destinationFile = _path.join(newDestName, fileName);
     return {
       destFolderName: destFolderName,
       destinationFile: destinationFile
@@ -278,7 +343,7 @@ module.exports = function(config) {
     this.log("Start concat video cycle.");
     const _this = this;
     setTimeout(function() {
-      // _this.concatVideo();
+      _this.concatVideo();
       _this.startConcatVideoCycle();
       _this.log("Inside video cycle.");
     }, _this.config.videoConcatPeriod);
@@ -298,7 +363,7 @@ module.exports = function(config) {
   };
 
   this.ensureDayVideoExists = function(dateStamp, cb){
-    const videoFileName = "cam" + this.config.cameraNumber + "_" + dateStamp + ".mp4"
+    const videoFileName = "cam" + this.config.cameraNumber + "_" + dateStamp + ".mp4";
     const destVideoName = _path.join(this.outFolder, videoFileName);
     if(_fs.existsSync(destVideoName)){
       cb(dateStamp);
@@ -319,6 +384,7 @@ module.exports = function(config) {
   };
 
   this.concatVideoInFolder = function(dateStamp){
+    const videoFileName = "cam" + this.config.cameraNumber + "_" + dateStamp + ".mp4";
     const _this = this;
     const sourceVideoFolder = _path.join(this.outFolder,dateStamp,'tmp');
     const tmpVideoName = _path.join(sourceVideoFolder,'tmp.mp4');
@@ -332,7 +398,7 @@ module.exports = function(config) {
         });
         console.log(newVideo);
         if(newVideo.length >0){
-          const destVideoName = _path.join(_this.outFolder,dateStamp,_this.videoFileName);
+          const destVideoName = _path.join(_this.outFolder, videoFileName);
           videoLib.mergeVideo(destVideoName, newVideo, tmpVideoName, function(){
             _fs.unlink(destVideoName, function(error) {
               if (error) {
