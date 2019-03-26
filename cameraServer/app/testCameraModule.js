@@ -37,7 +37,7 @@ var config1 = {
     */
 };
 var camera1 = new (require('./core/camera'))(config1);
-// camera1.watch();
+camera1.watch();
 
 var config2 = {
     inRoot: '../web_camera_in/',

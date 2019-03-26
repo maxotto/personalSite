@@ -6,8 +6,6 @@ const _path = require("path"); //require node path module (a couple of tools for
 const _walk = require("walkdir");
 const _ftpU = require("../utils/ftpu");
 const _queue = require("better-queue", { concurrent: 1 });
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, label, printf } = format;
 
 module.exports = function(config) {
   const _this = this;
@@ -15,14 +13,6 @@ module.exports = function(config) {
   this.config = config;
   this.videoLib = require("../utils/videoLibEx")(config);
   this.logger = require('../utils/logger')(config);
-  this.logger.log({
-    level: 'info',
-    message: 'What time is the testing at?'
-  });
-  this.logger.log({
-    level: 'error',
-    message: 'error'
-  });
   this.onceCount = 0;
   this.foldersToMakeVideo = {};
   this.inFolder =
@@ -32,7 +22,11 @@ module.exports = function(config) {
   this.extFilter = this.config.extFilter;
   // this.videoFileName = "cam" + this.config.cameraNumber + "Video.mp4";
   this.log = function() {
-    console.log("Camera " + this.config.cameraNumber + ": ", ...arguments);
+    var args = [...arguments];
+    this.logger.log({
+      level: 'info',
+      message: args
+    });
   };
   this.queue = new _queue(function(task, cb) {
     _this.log("Task started.");

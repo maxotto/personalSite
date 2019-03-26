@@ -2,11 +2,21 @@ var videoshow = require('videoshow');
 var fs = require('fs-extra');
 var path = require('path');
 let videoOptions;
+let logger;
+let log;
 
 class VideoLib{
 
   constructor(config){
     videoOptions = config.videoOptions;
+    logger = require('../utils/logger')(config);
+    log = function() {
+      var args = [...arguments];
+      logger.log({
+        level: 'info',
+        message: args
+      });
+    };
   };
 
 
@@ -24,7 +34,7 @@ class VideoLib{
 
     mergedVideo.mergeToFile(outVideo, './tmpVideo/')
       .on('error', function(err) {
-        console.log('Error ' + err.message);
+        log('Error ' + err.message);
       })
       .on('end', function() {
         cb();
@@ -78,10 +88,10 @@ async function createVideoBFromPathBatch(picFolder, outFile, batchSize, cb) {
     }
     count++;
     const res = await _processBatch(batch, batchFileName);
-    console.log(res);
+    log(res);
   }, Promise.resolve());
   const r = await _mergeBatches(mainVideo, videoToMerge, outFile);
-  console.log(r);
+  log(r);
 }
 
 function createBatchFileName(mainFile, batchNumber){
@@ -98,7 +108,7 @@ function _processBatch(batch, batchFileName){
       .on('progress', function (data) {
       })
       .on('error', function (err) {
-        console.error(batchFileName,'Error:', err);
+        this.error(batchFileName,'Error:', err);
       })
       .on('end', function (output) {
         resolve('Batch finished, ' + batchFileName + ' created.');
@@ -154,7 +164,7 @@ function mergeVideo(mainVideo, newVideos, outVideo, cb){
 
   mergedVideo.mergeToFile(outVideo, './tmpVideo/')
     .on('error', function(err) {
-      console.log('Error ' + err.message);
+      log('Error ' + err.message);
     })
     .on('end', function() {
       cb();
