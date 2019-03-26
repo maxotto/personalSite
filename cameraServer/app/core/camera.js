@@ -66,12 +66,12 @@ module.exports = function(config) {
   this.addWatcher = function(){
     var _this = this;
     var destFolderRoot = this.outFolder;
-    console.log('Set watcher for ' + this.inFolder);
+    this.log('Set watcher for ' + this.inFolder);
     picSel.watch(this.inFolder, destFolderRoot, 'jpg', function (changedFile, destFolderRoot) {
       var fileName = _path.basename(changedFile);
       var dest = _this.makeDestinationFolder(fileName);
-      console.log(dest);
-      console.log(fileName);
+      _this.log(dest);
+      _this.log(fileName);
       _this.log("Need to copy file " + changedFile + " to " + dest.destinationFile+ '.');
 
       _this.queue.push({
@@ -141,7 +141,7 @@ module.exports = function(config) {
       }
     });
     this.onceCount = found.length;
-    // console.log({found});
+    // this.log({found});
     _this.log("this.onceCount=", this.onceCount);
     if (found.length === 0) {
       _this.queue.push({
@@ -377,7 +377,7 @@ module.exports = function(config) {
             _fs.removeSync(tmpFolderName);
         }
         */
-        console.log('New day video is created: ' + destVideoName);
+        _this.log('New day video is created: ' + destVideoName);
         cb(dateStamp);
       });
     }
@@ -396,7 +396,7 @@ module.exports = function(config) {
         list.forEach(function (value) {
           newVideo.push(_path.join(sourceVideoFolder, value));
         });
-        console.log(newVideo);
+        _this.log(newVideo);
         if(newVideo.length >0){
           const destVideoName = _path.join(_this.outFolder, videoFileName);
           videoLib.mergeVideo(destVideoName, newVideo, tmpVideoName, function(){
@@ -408,7 +408,7 @@ module.exports = function(config) {
                 if (error) {
                   throw error;
                 }
-                console.log('File ' + destVideoName + ' rewritten.');
+                _this.log('File ' + destVideoName + ' rewritten.');
               });
             });
             newVideo.forEach(function(file){
@@ -416,7 +416,7 @@ module.exports = function(config) {
                 if (error) {
                   throw error;
                 }
-                console.log('File ' + file + ' deleted.');
+                _this.log('File ' + file + ' deleted.');
               });
             })
           });

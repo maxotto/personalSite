@@ -7,7 +7,9 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
 module.exports = function (config) {
   let transportsList = [];
   if(config.logger.transports.console.level){
-    transportsList.push(new transports.Console({ level: config.logger.transports.console.level }));
+    transportsList.push(new transports.Console({
+      level: config.logger.transports.console.level
+    }));
   }
   if(config.logger.transports.file.level){
     transportsList.push(new transports.File({
