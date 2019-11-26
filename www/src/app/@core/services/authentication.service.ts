@@ -61,8 +61,9 @@ export class AuthenticationService {
             'username': username,
             'password': password
         };
-        const url = this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/login';
-        // const url = 'http://api.agmsite.com/login';
+        //TODO автоматически переключать url в зависимости от среды - dev или prod
+        // const url = this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/login';
+        const url = 'http://api.agmsite.com/login';
         // console.log('!!!!!');
         // console.log(url);
         return this.httpClient.post(url, body).map((response: any) => {

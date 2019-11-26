@@ -19,7 +19,7 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "developeruz/yii2-db-rbac": "*",
-        "mdmsoft/yii2-admin": "~2.8",
+        "mdmsoft/yii2-admin": "2.9",
         "msheng/yii2-jwt": "1.0.1"
     },
     "require-dev": {
