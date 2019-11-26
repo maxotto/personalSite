@@ -23,7 +23,9 @@ export class AuthenticationService {
         this.token = currentUser && currentUser.token;
         this.refreshToken = currentUser && currentUser.refresh;
         this.user = currentUser && currentUser.user;
-        const hostname = this._window.location.hostname.replace(/^(www\.)/, '' );
+        //TODO автоматически переключать url в зависимости от среды - dev или prod
+        // const hostname = this._window.location.hostname.replace(/^(www\.)/, '' );
+        const hostname = 'agmsite.com';
         this.apiURL = `${this._window.location.protocol}//${GlobalParams.API_SUBDOMEN}.${hostname}`;
     }
     changeAuthState(number) {
@@ -61,9 +63,9 @@ export class AuthenticationService {
             'username': username,
             'password': password
         };
-        //TODO автоматически переключать url в зависимости от среды - dev или prod
-        // const url = this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/login';
-        const url = 'http://api.agmsite.com/login';
+                const url = this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/login';
+        console.log(url);
+        // const url = 'http://api.agmsite.com/login';
         // console.log('!!!!!');
         // console.log(url);
         return this.httpClient.post(url, body).map((response: any) => {
