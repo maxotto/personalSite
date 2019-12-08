@@ -35,7 +35,7 @@ import { AgmCoreModule } from '@agm/core';
   ],
   imports: [
     BrowserModule,
-    NgbModule.forRoot(),
+    NgbModule,
     AngularFontAwesomeModule,
     AppRoutingModule,
     BrowserAnimationsModule,

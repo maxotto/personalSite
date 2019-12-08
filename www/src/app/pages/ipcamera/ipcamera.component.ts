@@ -7,7 +7,7 @@ import {NgbCarousel} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./ipcamera.component.css']
 })
 export class IpcameraComponent implements OnInit {
-  @ViewChild('carousel') carousel: NgbCarousel;
+  @ViewChild('carousel', { static: false }) carousel: NgbCarousel;
   hash: number;
 
   constructor() {
