@@ -1,8 +1,8 @@
-﻿import { Inject, Injectable } from '@angular/core';
+
+import {map} from 'rxjs/operators';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import { Observable , BehaviorSubject} from 'rxjs';
 import { GlobalParams } from '../../params';
 import { JwtHelper } from '../jwt/jwtHelper';
 import {Router} from '@angular/router';
@@ -73,7 +73,7 @@ export class AuthenticationService {
         // const url = 'http://api.agmsite.com/login';
         // console.log('!!!!!');
         // console.log(url);
-        return this.httpClient.post(url, body).map((response: any) => {
+        return this.httpClient.post(url, body).pipe(map((response: any) => {
             // login successful if there's a jwt token in the response
             const accessToken = response && response.access;
             const refreshToken = response && response.refresh;
@@ -95,7 +95,7 @@ export class AuthenticationService {
                 // return errors list to indicate failed login
                 return response && response.errors;
             }
-        });
+        }));
     }
   logout(): void {
     this.token = null;
@@ -110,7 +110,7 @@ export class AuthenticationService {
         };
         return this.httpClient.post(
           this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN +  '/refresh', body
-        ).map((response: any) => {
+        ).pipe(map((response: any) => {
             const accessToken = response && response.access;
             // const username = accessToken && accessToken.username;
             const refreshToken = response && response.refresh;
@@ -130,7 +130,7 @@ export class AuthenticationService {
                 this.logout();
                 return false;
             }
-        });
+        }));
     }
     getAccessToken() {
         return this.token;
