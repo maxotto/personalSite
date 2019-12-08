@@ -6,6 +6,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { GlobalParams } from '../../params';
 import { JwtHelper } from '../jwt/jwtHelper';
 import {Router} from '@angular/router';
+import { isDevMode } from '@angular/core';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,9 +24,13 @@ export class AuthenticationService {
         this.token = currentUser && currentUser.token;
         this.refreshToken = currentUser && currentUser.refresh;
         this.user = currentUser && currentUser.user;
-        //TODO автоматически переключать url в зависимости от среды - dev или prod
-        // const hostname = this._window.location.hostname.replace(/^(www\.)/, '' );
-        const hostname = 'agmsite.com';
+        let hostname = this._window.location.hostname.replace(/^(www\.)/, '' );
+        let mode = 'PROD';
+        if(isDevMode()) {
+            hostname = 'agmsite.com';
+            mode = 'DEV';
+        }
+        console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
         this.apiURL = `${this._window.location.protocol}//${GlobalParams.API_SUBDOMEN}.${hostname}`;
     }
     changeAuthState(number) {

@@ -7,9 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { TokenInterceptor } from './@core/services';
-import { AuthenticationService } from './@core/services';
 import { AuthGuard } from './@core/guard/auth.guard';
+import { TokenInterceptor } from './@core/services/token.interceptor';
+import { AuthenticationService } from './@core/services/authentication.service';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -46,14 +46,14 @@ import { AgmCoreModule } from '@agm/core';
     })
   ],
   providers: [
-      AuthenticationService,
-      AuthGuard,
-      {
-          provide: HTTP_INTERCEPTORS,
-          useClass: TokenInterceptor,
-          multi: true
-      },
-      {provide: Window, useValue: window},
+    {provide: Window, useValue: window},
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    AuthenticationService,
   ],
   bootstrap: [
     AppComponent
