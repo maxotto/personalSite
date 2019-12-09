@@ -32,6 +32,9 @@
         <li *ngIf="!isLogged()" class="nav-item">
           <a class="nav-link link" [routerLink]="['/login']"><fa name="user"></fa> Вход </a>
         </li>
+        <li *ngIf="!isLogged()" class="nav-item">
+          <a class="nav-link link" [routerLink]="['/login']"><fa name="user"></fa> Facebook login</a>
+        </li>
         <li *ngIf="isLogged()" class="nav-item">
           <a class="nav-link link" [routerLink]="['/home']" (click)="logout()"><fa name="user"></fa> Выход ({{user}}) </a>
         </li>
