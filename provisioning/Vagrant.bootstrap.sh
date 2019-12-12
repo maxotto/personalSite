@@ -126,10 +126,6 @@ nginx -s reload
 echo -e "\n--- MC install ---\n"
 apt-get install -y mc >> /vagrant/vm_build.log 2>&1
 
-deb http://archive.ubuntu.com/ubuntu bionic main universe
-deb http://archive.ubuntu.com/ubuntu bionic-security main universe
-deb http://archive.ubuntu.com/ubuntu bionic-updates main universe
-
 DBNAME=yii2
 DBPASSWD=secret
 
