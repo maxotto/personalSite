@@ -125,6 +125,11 @@ nginx -s reload
 # install MC
 echo -e "\n--- MC install ---\n"
 apt-get install -y mc >> /vagrant/vm_build.log 2>&1
+
+deb http://archive.ubuntu.com/ubuntu bionic main universe
+deb http://archive.ubuntu.com/ubuntu bionic-security main universe
+deb http://archive.ubuntu.com/ubuntu bionic-updates main universe
+
 DBNAME=yii2
 DBPASSWD=secret
 
@@ -132,7 +137,7 @@ echo -e "\n--- Setting up our MySQL db ---\n"
 mysql -uroot -p$DBPASSWD -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DBPASSWD';" >> /vagrant/vm_build.log 2>&1
 mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
 # дадим возможность подключаться к этой базе с хоста
-mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON $DBNAME.* TO root@"%" IDENTIFIED BY '$DBPASSWD' WITH GRANT OPTION;" >> /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON $DBNAME.* TO root@'%' IDENTIFIED BY '$DBPASSWD' WITH GRANT OPTION;" >> /vagrant/vm_build.log 2>&1
 mysqladmin -u root -p$DBPASSWD flush-privileges >> /vagrant/vm_build.log 2>&1
 # провести миграции
 cd /var/www/agmsite/engine
