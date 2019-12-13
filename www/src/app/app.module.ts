@@ -8,8 +8,8 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthGuard } from './@core/guard/auth.guard';
-import { TokenInterceptor } from './@core/services/token.interceptor';
-import { AuthenticationService } from './@core/services/authentication.service';
+import { TokenInterceptor } from './@core/services';
+import { AuthenticationService } from './@core/services';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -22,18 +22,14 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
-import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import { FacebookLoginProvider  } from 'angularx-social-login';
 
 import { AgmCoreModule } from '@agm/core';
 
 const config = new AuthServiceConfig([
   {
-    id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider('Google-OAuth-Client-Id')
-  },
-  {
     id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider('Facebook-App-Id')
+    provider: new FacebookLoginProvider('973483776359176')
   }
 ]);
 
