@@ -25,7 +25,6 @@ import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 import { AgmCoreModule } from '@agm/core';
-import { FbLoginComponent } from './pages/fb-login/fb-login.component';
 
 const config = new AuthServiceConfig([
   {
@@ -51,8 +50,7 @@ export function provideConfig() {
     HomeComponent,
     YandexMailLoginFormComponent,
     SidebarComponent,
-    NotFoundComponent,
-    FbLoginComponent
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +70,7 @@ export function provideConfig() {
       provide: AuthServiceConfig,
       useFactory: provideConfig
     },
-    {provide: Window, useValue: window},
+    { provide: Window, useValue: window },
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
