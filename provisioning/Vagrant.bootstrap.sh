@@ -20,8 +20,10 @@ rm /etc/nginx/sites-enabled/default
 
 VHOST1=$(cat <<EOF
 server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    ssl on;
+    ssl_certificate /vagrant/www/ssl/server.crt;
+    ssl_certificate_key /vagrant/www/ssl/server.key;
     root /var/www/agmsite/www;
     index index.php index.html index.htm index.nginx-debian.html;
     error_page 404 /index.html;
@@ -48,8 +50,10 @@ ln -s /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
 
 VHOST3=$(cat <<EOF
 server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    ssl on;
+    ssl_certificate /vagrant/www/ssl/server.crt;
+    ssl_certificate_key /vagrant/www/ssl/server.key;
     root /var/www/agmsite/engine/frontend/web;
     index index.php index.html index.htm index.nginx-debian.html;
     # сервер API должен позволять CORS!
@@ -78,8 +82,10 @@ ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
 
 VHOST2=$(cat <<EOF
 server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    ssl on;
+    ssl_certificate /vagrant/www/ssl/server.crt;
+    ssl_certificate_key /vagrant/www/ssl/server.key;
     root /var/www/agmsite/engine/backend/web;
     index index.php index.html index.htm index.nginx-debian.html;
     server_name admin.agmsite.com;
