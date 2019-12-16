@@ -18,6 +18,10 @@ export class NavbarComponent implements OnInit {
       this.user = this.auth.user;
       return true;
     }
+    if (this.auth.fbUser) {
+      this.user = this.auth.fbUser.name;
+      return true;
+    }
     this.user = '';
     return false;
   }

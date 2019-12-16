@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { GlobalParams } from '../../params';
+import { coreUrls } from '../../params';
 import { JwtHelper } from '../jwt/jwtHelper';
 import { Router } from '@angular/router';
 import { isDevMode } from '@angular/core';
@@ -18,6 +19,7 @@ export class AuthenticationService {
     public token: string;
     public refreshToken: string;
     public user: string;
+    public fbUser: SocialUser;
     private apiURL: string;
 
     constructor(
@@ -26,33 +28,38 @@ export class AuthenticationService {
       private router: Router,
       private fbAuthService: AuthService
     ) {
-        // set token if saved in local storage
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.token = currentUser && currentUser.token;
-        this.refreshToken = currentUser && currentUser.refresh;
-        this.user = currentUser && currentUser.user;
-        console.log({currentUser});
-        let hostname = this._window.location.hostname.replace(/^(www\.)/, '');
-        let mode = 'PROD';
-        if (isDevMode()) {
-            hostname = 'agmsite.com';
-            mode = 'DEV';
-        }
-        console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
-        this.apiURL = `${this._window.location.protocol}//${GlobalParams.API_SUBDOMEN}.${hostname}`;
-        // Check FaceBook login state
-        this.fbAuthService.authState.subscribe((user) => {
-          console.log(user);
-        });
+      // set token if saved in local storage
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.token = currentUser && currentUser.token;
+      this.refreshToken = currentUser && currentUser.refresh;
+      this.user = currentUser && currentUser.user;
+      const { hostname, apiURL } = coreUrls(this._window);
+      this.apiURL = apiURL;
+      let mode = 'PROD';
+      if (isDevMode()) {
+          mode = 'DEV';
+      }
+      console.log({currentUser});
+      console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
+      // Check FaceBook login state
+      this.fbAuthService.authState.subscribe((user) => {
+        console.log(user);
+        this.fbUser = user;
+      });
     }
     changeAuthState(number) {
         this._authStateSource.next(number);
     }
     isLogged() {
         console.log('IsLogged start');
-        if (!this.token) {
+        if (!this.token || !this.fbUser) {
             this.router.navigate(['/home']);
             return false;
+        }
+        if (this.fbUser) {
+          console.log('this.fbUser => ', this.fbUser);
+          this.changeAuthState(1);
+          return true;
         }
         const jwtHelper: JwtHelper = new JwtHelper();
         if (!(jwtHelper.isTokenExpired(this.token))) {
@@ -62,8 +69,8 @@ export class AuthenticationService {
         } else {
             // делаем попытку рефреша токенов
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const refreshed = this.refreshTokens(currentUser).subscribe(
-                result => {
+            this.refreshTokens(currentUser).subscribe(
+              () => {
                     this.changeAuthState(1);
                     return true;
                 },
@@ -90,7 +97,6 @@ export class AuthenticationService {
             const accessToken = response && response.access;
             const refreshToken = response && response.refresh;
             this.user = response && response.user;
-            const jwtHelper: JwtHelper = new JwtHelper();
             if (accessToken) {
                 // set token property
                 this.token = accessToken;
@@ -114,6 +120,7 @@ export class AuthenticationService {
         this.refreshToken = null;
         this.user = null;
         localStorage.removeItem('currentUser');
+        this.fbAuthService.signOut();
         this.changeAuthState(0);
     }
     refreshTokens(currentUser) {
@@ -127,7 +134,6 @@ export class AuthenticationService {
             // const username = accessToken && accessToken.username;
             const refreshToken = response && response.refresh;
             this.user = currentUser.user;
-            const jwtHelper: JwtHelper = new JwtHelper();
             if (accessToken && refreshToken) {
                 this.token = accessToken;
                 this.refreshToken = refreshToken;
@@ -139,6 +145,7 @@ export class AuthenticationService {
                 return true;
             } else {
                 const errors = response && response.errors;
+                console.error({errors});
                 this.logout();
                 return false;
             }
