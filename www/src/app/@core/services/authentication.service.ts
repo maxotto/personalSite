@@ -7,6 +7,8 @@ import { GlobalParams } from '../../params';
 import { JwtHelper } from '../jwt/jwtHelper';
 import { Router } from '@angular/router';
 import { isDevMode } from '@angular/core';
+import { AuthService } from 'angularx-social-login';
+import { SocialUser } from 'angularx-social-login';
 
 @Injectable()
 export class AuthenticationService {
@@ -18,12 +20,18 @@ export class AuthenticationService {
     public user: string;
     private apiURL: string;
 
-    constructor(private httpClient: HttpClient, @Inject(Window) private _window: Window, private router: Router) {
+    constructor(
+      private httpClient: HttpClient,
+      @Inject(Window)private _window: Window,
+      private router: Router,
+      private fbAuthService: AuthService
+    ) {
         // set token if saved in local storage
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.token = currentUser && currentUser.token;
         this.refreshToken = currentUser && currentUser.refresh;
         this.user = currentUser && currentUser.user;
+        console.log({currentUser});
         let hostname = this._window.location.hostname.replace(/^(www\.)/, '');
         let mode = 'PROD';
         if (isDevMode()) {
@@ -32,6 +40,10 @@ export class AuthenticationService {
         }
         console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
         this.apiURL = `${this._window.location.protocol}//${GlobalParams.API_SUBDOMEN}.${hostname}`;
+        // Check FaceBook login state
+        this.fbAuthService.authState.subscribe((user) => {
+          console.log(user);
+        });
     }
     changeAuthState(number) {
         this._authStateSource.next(number);
