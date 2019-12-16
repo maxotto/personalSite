@@ -37,13 +37,11 @@ export class AuthenticationService {
       this.apiURL = apiURL;
       let mode = 'PROD';
       if (isDevMode()) {
-          mode = 'DEV';
+        mode = 'DEV';
+        console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
       }
-      console.log({currentUser});
-      console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
       // Check FaceBook login state
       this.fbAuthService.authState.subscribe((user) => {
-        console.log(user);
         this.fbUser = user;
       });
     }
@@ -51,7 +49,6 @@ export class AuthenticationService {
         this._authStateSource.next(number);
     }
     isLogged() {
-        console.log('IsLogged start');
         if (!this.token || !this.fbUser) {
             this.router.navigate(['/home']);
             return false;
