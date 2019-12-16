@@ -8,12 +8,24 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule) },
-  { path: 'fblogin', loadChildren: () => import('./pages/fb-login/fb-login.module').then(m => m.FbLoginModule) },
-  { path: 'map', loadChildren: () => import('./pages/google-maps/google-maps.module').then(m => m.GoogleMapsModule), canLoad: [AuthGuard], canActivate: [AuthGuard] },
+  { path: 'map',
+    loadChildren: () => import('./pages/google-maps/google-maps.module').then(m => m.GoogleMapsModule),
+    canLoad: [AuthGuard],
+    canActivate: [AuthGuard]
+  },
   { path: 'about', loadChildren: () => import('./pages/about/about.module').then(m => m.AboutModule) },
-  { path: 'gallery', loadChildren: () => import('./pages/photo-gallery/photo-gallery.module').then(m => m.PhotoGalleryModule), canLoad: [AuthGuard] },
-  { path: 'tmonitor', loadChildren: () => import('./pages/temp-monitor/temp-monitor.module').then(m => m.TempMonitorModule), canLoad: [AuthGuard] },
-  { path: 'ipcamera', loadChildren: () => import('./pages/ipcamera/ipcamera.module').then(m => m.IpcameraModule), canLoad: [AuthGuard] },
+  { path: 'gallery',
+    loadChildren: () => import('./pages/photo-gallery/photo-gallery.module').then(m => m.PhotoGalleryModule),
+    canLoad: [AuthGuard]
+  },
+  { path: 'tmonitor',
+    loadChildren: () => import('./pages/temp-monitor/temp-monitor.module').then(m => m.TempMonitorModule),
+    canLoad: [AuthGuard]
+  },
+  { path: 'ipcamera',
+    loadChildren: () => import('./pages/ipcamera/ipcamera.module').then(m => m.IpcameraModule),
+    canLoad: [AuthGuard]
+  },
   { path: 'not-found', component: NotFoundComponent },
   { path: '**', redirectTo: 'not-found' }
 ];

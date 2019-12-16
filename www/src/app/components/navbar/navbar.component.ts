@@ -8,6 +8,7 @@ import { AuthenticationService } from '../../@core/services';
 })
 export class NavbarComponent implements OnInit {
   public user = '';
+  private isNavbarCollapsed: boolean;
   constructor(private auth: AuthenticationService) { }
 
   ngOnInit() {
