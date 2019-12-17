@@ -1,13 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
-    background: linear-gradient(rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)), url("assets/IMG_9963.jpg");
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("assets/IMG_9963.jpg");
+  overflow-x: hidden;
 }
-.img-logo{
-    margin-right: 20px
+.img-logo {
+  margin-right: 20px;
 }

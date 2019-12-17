@@ -1,4 +1,5 @@
 var watchr = require('watchr');
+var path = require('path');
 module.exports = {
     watch: function (path, dest, ext, cb) {
         'use strict';

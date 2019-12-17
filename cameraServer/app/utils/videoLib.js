@@ -1,6 +1,9 @@
+// todo recreate module to pass config for better logging
+
 var videoshow = require('videoshow');
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
+const queue = require("better-queue", { concurrent: 1 });
 
 var videoOptions = {
     fps: 25,
@@ -22,9 +25,7 @@ function mergeVideo(mainVideo, newVideos, outVideo, cb){
         images.push(fileName);
     });
     var mergedVideo = videoshow.ffmpeg();
-    var videoNames = images;
-
-    videoNames.forEach(function(videoName){
+    images.forEach(function(videoName){
         mergedVideo = mergedVideo.addInput(videoName);
     });
 
@@ -95,6 +96,124 @@ function createVideoBFromPath(picFolder, outFile, cb) {
             cb(output);
         });
 }
+
+async function createVideoBFromPathBatch(picFolder, outFile, batchSize, cb) {
+    'use strict';
+    var images = [];
+    var isNoFile = true;
+    var batches = [];
+    var counter = 0;
+    fs.readdirSync(picFolder).forEach(function(file) {
+        counter++;
+        var fullName = picFolder + '/' + file;
+        // console.log(path.extname(fullName));
+        // TODO check file is really picture
+        if(path.extname(fullName) === '.jpg'){
+            images.push(fullName);
+        }
+        if(counter === batchSize){
+            batches.push(images);
+            images = [];
+            counter = 0;
+        }
+        isNoFile = false;
+    });
+    batches.push(images);
+    if(isNoFile) {
+        batches.push(['blank.jpg']);
+    }
+    // console.log({batches});
+    var batchesCount = batches.length;
+    var readyBatches = 0;
+    var mainVideo;
+    var videoToMerge = [];
+    let count = 0;
+
+    await batches.reduce(async (promise, batch) => {
+        await promise;
+        var batchFileName = createBatchFileName(outFile,count);
+        if(count === 0){
+            mainVideo = batchFileName;
+        } else {
+            videoToMerge.push(batchFileName);
+        }
+        count++;
+        const res = await _processBatch(batch, batchFileName, videoOptions);
+        console.log(res);
+    }, Promise.resolve());
+    // console.log('Batches are created. Lets merge them!');
+    // console.log(mainVideo);
+    // console.log(videoToMerge);
+    const r = await _mergeBatches(mainVideo, videoToMerge, outFile);
+    console.log(r);
+}
+
+function _mergeBatches(mainVideo, videoToMerge, outFile){
+    return new Promise((resolve, reject) => {
+        // console.log('inside _mergeBatches, ' + outFile);
+        if(videoToMerge.length === 0){
+            fs.move(mainVideo, outFile, err => {
+                if(err){
+                    reject(err);
+                } else {
+                    resolve('createVideoBFromPathBatch (1 batch exists) ready: ' + outFile + '.');
+                }
+            })
+        } else {
+            mergeVideo(mainVideo, videoToMerge, outFile, res => {
+                fs.remove(mainVideo, err => {
+                    if(err){
+                        reject(err);
+                    }
+                    let delCount = 0;
+                    const toDelCount = videoToMerge.length;
+                    videoToMerge.forEach(fileToDel => {
+                        fs.remove(fileToDel, err =>{
+                            if(err){
+                                reject(err);
+                            }
+                            delCount++;
+                            if(delCount === toDelCount){
+                                resolve('createVideoBFromPathBatch (normal batches) ready: ' + outFile + '.');
+                            }
+                        })
+                    })
+                });
+            });
+        }
+    });
+}
+
+function _processBatch(batch, batchFileName, videoOptions){
+    return new Promise((resolve, reject) => {
+        // console.log('inside processBatch, ' + batchFileName);
+        videoshow(batch, videoOptions)
+          .save(batchFileName)
+          .on('start', function (command) {
+              //console.log(batchFileName,'ffmpeg process started:', command)
+          })
+          .on('progress', function (data) {
+              //console.log(batchFileName,'->', data.percent);
+          })
+          .on('error', function (err) {
+              console.error(batchFileName,'Error:', err);
+          })
+          .on('end', function (output) {
+              // console.log('--> Batch finished, ' + batchFileName + ' created.');
+              resolve('Batch finished, ' + batchFileName + ' created.');
+          });
+    });
+}
+
+async function startCreateVideoBFromPathBatch(picFolder, outFile, batchSize){
+    await createVideoBFromPathBatch(picFolder, outFile, batchSize);
+    return 'startCreateVideoBFromPathBatch Done!'
+}
+function createBatchFileName(mainFile, batchNumber){
+    var p = path.parse(mainFile);
+    return path.resolve(p.dir, p.name + "_batch_" + String(batchNumber) + p.ext);
+}
+
 function createVideoBFromImage(file, outFile, cb) {
     'use strict';
     var images = [file];
@@ -115,7 +234,34 @@ function createVideoBFromImage(file, outFile, cb) {
         });
 }
 module.exports.createVideoBFromPath = createVideoBFromPath;
+module.exports.startCreateVideoBFromPathBatch = startCreateVideoBFromPathBatch;
 module.exports.createVideoBFromImage = createVideoBFromImage;
 module.exports.concatVideo = concatVideo;
 module.exports.mergeVideo = mergeVideo;
 module.exports.videoOptions = videoOptions;
+
+/*
+function waitFor(ms){
+return new Promise(r => setTimeout(r, ms));
+}
+console.log('start');
+const a = [1,2,3,4,5,6]
+var count = 21;
+async function doit(){
+    console.log('inside doit');
+    await a.reduce(async (promise, num) => {
+        await promise;
+        await waitFor(500);
+        console.log(num + (++count));
+    }, Promise.resolve());
+}
+async function start(){
+    await doit();
+    console.log('finish');
+    return 'Done that!'
+}
+start().then(res=>{
+    console.log(res);
+});
+
+*/

@@ -20,34 +20,11 @@ function makeDestinationFolder(file, destFolderRoot) {
     });
     return newDestName;
 }
-function ensureExists(path, mask, cb) {
-    if (typeof mask === 'function') { // allow the `mask` parameter to be optional
-        cb = mask;
-        mask = 0777;
-    }
-    fs.mkdir(path, mask, function(err) {
-        if (err) {
-            if (err.code === 'EEXIST') cb(null); // ignore the error if the folder already exists
-            else cb(err); // something else went wrong
-        } else cb(null); // successfully created folder
-    });
+function ensureExists(path) {
+    return fs.ensureDir(path);
 }
-function copyFile (source, target, cb) {
-    var cbCalled = false;
-    var rd = fs.createReadStream(source);
-    rd.on("error", done);
-    var wr = fs.createWriteStream(target);
-    wr.on("error", done);
-    wr.on("close", function(ex) {
-        done();
-    });
-    rd.pipe(wr);
-    function done(err) {
-        if (!cbCalled) {
-            cb(err);
-            cbCalled = true;
-        }
-    }
+function copyFile (source, target) {
+    return fs.copy(source, target);
 }
 function processCameraPictures(sourceFolder, destFolderRoot, extFilter) {
     fs.readdir(sourceFolder, function (err, list) {

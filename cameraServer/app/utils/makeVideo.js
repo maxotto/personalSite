@@ -1,7 +1,7 @@
-var vl = require('./utils/videoLib');
-var picSel = require('./utils/PictureSelector');
+var vl = require('./videoLib');
+var picSel = require('./PictureSelector');
 var fs = require('fs');
-var fsu = require('./utils/fsu');
+var fsu = require('./fsu');
 var path = require('path');
 var outFile;
 var checkNewFilesPeriod = 5*60*1000;

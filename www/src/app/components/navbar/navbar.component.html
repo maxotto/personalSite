@@ -1,40 +1,80 @@
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <img class="img-fluid img-logo rounded-circle " src="./assets/IMG_8522.jpg" alt="">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarContent">
-      <ul class="nav navbar-nav  mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/home"  routerLinkActive="active"><fa name="home"></fa> Главная </a>
-        </li>
-        <li *ngIf="isLogged()" class="nav-item">
-          <a class="nav-link" routerLink="/gallery"  routerLinkActive="active"><fa name="photo"></fa> Фотогалерея </a>
-        </li>
-        <li *ngIf="isLogged()" class="nav-item">
-          <a class="nav-link" routerLink="/map"  routerLinkActive="active"><fa name="map"></fa> Карты Google </a>
-        </li>
-        <li *ngIf="isLogged()" class="nav-item">
-          <a class="nav-link" routerLink="/tmonitor"  routerLinkActive="active"><fa name="thermometer-half"></fa> Мониторинг температуры </a>
-        </li>
-        <li *ngIf="isLogged()" class="nav-item">
-          <a class="nav-link" routerLink="/ipcamera"  routerLinkActive="active"><fa name="images"></fa> Мониторинг обстановки </a>
-        </li>
-        <li *ngIf="isLogged()" class="nav-item">
-          <a class="nav-link" routerLink="/about"  routerLinkActive="active"><fa name="question-circle"></fa> О проекте </a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><fa name="search"></fa></button>
-      </form>
-      <ul class="nav navbar-nav">
-        <li *ngIf="!isLogged()" class="nav-item">
-          <a class="nav-link link" [routerLink]="['/login']"><fa name="user"></fa> Вход </a>
-        </li>
-        <li *ngIf="isLogged()" class="nav-item">
-          <a class="nav-link link" [routerLink]="['/home']" (click)="logout()"><fa name="user"></fa> Выход ({{user}}) </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <img
+    class="img-fluid img-logo rounded-circle "
+    src="./assets/IMG_8522.jpg"
+    alt=""
+  />
+  <button
+    class="navbar-toggler navbar-toggler-right"
+    type="button"
+    (click)="isNavbarCollapsed = !isNavbarCollapsed"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div
+    [ngbCollapse]="isNavbarCollapsed"
+    class="collapse navbar-collapse"
+    id="navbarSupportedContent"
+  >
+    <ul class="nav navbar-nav  mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home" routerLinkActive="active"
+          ><fa name="home"></fa> Главная
+        </a>
+      </li>
+      <li *ngIf="isLogged()" class="nav-item">
+        <a class="nav-link" routerLink="/gallery" routerLinkActive="active"
+          ><fa name="photo"></fa> Фотогалерея
+        </a>
+      </li>
+      <li *ngIf="isLogged()" class="nav-item">
+        <a class="nav-link" routerLink="/map" routerLinkActive="active"
+          ><fa name="map"></fa> Карты Google
+        </a>
+      </li>
+      <li *ngIf="isLogged()" class="nav-item">
+        <a class="nav-link" routerLink="/tmonitor" routerLinkActive="active"
+          ><fa name="thermometer-half"></fa> Мониторинг температуры
+        </a>
+      </li>
+      <li *ngIf="isLogged()" class="nav-item">
+        <a class="nav-link" routerLink="/ipcamera" routerLinkActive="active"
+          ><fa name="images"></fa> Мониторинг обстановки
+        </a>
+      </li>
+      <li *ngIf="isLogged()" class="nav-item">
+        <a class="nav-link" routerLink="/about" routerLinkActive="active"
+          ><fa name="question-circle"></fa> О проекте
+        </a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input
+        class="form-control mr-sm-2"
+        type="search"
+        placeholder="Поиск"
+        aria-label="Search"
+      />
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+        <fa name="search"></fa>
+      </button>
+    </form>
+    <ul class="nav navbar-nav">
+      <li *ngIf="!isLogged()" class="nav-item">
+        <a class="nav-link link" [routerLink]="['/login']"
+          ><fa name="user"></fa> Вход
+        </a>
+      </li>
+      <li *ngIf="isLogged()" class="nav-item">
+        <a class="nav-link link" [routerLink]="['/home']" (click)="logout()"
+          ><fa name="user"></fa> Выход ({{ user }})
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

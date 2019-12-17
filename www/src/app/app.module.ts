@@ -7,9 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { AuthGuard } from './@core/guard/auth.guard';
 import { TokenInterceptor } from './@core/services';
 import { AuthenticationService } from './@core/services';
-import { AuthGuard } from './@core/guard/auth.guard';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -21,7 +21,22 @@ import { YandexMailLoginFormComponent } from './components/yandex-mail-login-for
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
+import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
+import { FacebookLoginProvider  } from 'angularx-social-login';
+
 import { AgmCoreModule } from '@agm/core';
+
+const config = new AuthServiceConfig([
+  {
+    id: FacebookLoginProvider.PROVIDER_ID,
+    provider: new FacebookLoginProvider('973483776359176')
+  }
+]);
+
+export function provideConfig() {
+  return config;
+}
+
 
 @NgModule({
   declarations: [
@@ -35,7 +50,7 @@ import { AgmCoreModule } from '@agm/core';
   ],
   imports: [
     BrowserModule,
-    NgbModule.forRoot(),
+    NgbModule,
     AngularFontAwesomeModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -43,17 +58,22 @@ import { AgmCoreModule } from '@agm/core';
     FormsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyARIMiX_C7rE4U-pM6nih2n2z2z0YfhrfY'
-    })
+    }),
+    SocialLoginModule
   ],
   providers: [
-      AuthenticationService,
-      AuthGuard,
-      {
-          provide: HTTP_INTERCEPTORS,
-          useClass: TokenInterceptor,
-          multi: true
-      },
-      {provide: Window, useValue: window},
+    {
+      provide: AuthServiceConfig,
+      useFactory: provideConfig
+    },
+    { provide: Window, useValue: window },
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    AuthenticationService,
   ],
   bootstrap: [
     AppComponent

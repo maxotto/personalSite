@@ -249,7 +249,7 @@ module.exports = function(config){
                 cb(dateStamp);
             });
         }
-    };    
+    };
 
     this.concatVideoInFolder = function(dateStamp){
         var _this = this;
@@ -291,13 +291,13 @@ module.exports = function(config){
             }
         });
     };
-    
+
     this.makeSingleVideo = function(imageFileName, cb){
         var imageInfo = _path.parse(imageFileName);
         var tmpPath = _path.join(imageInfo.dir,'tmp');
         var videoFileName = _path.join(tmpPath,imageInfo.name + '.mp4');
         var _this = this;
-        _fsu.ensureExists(tmpPath, 0777, function(err) {
+        _fsu.ensureExists(tmpPath, 0o777, function(err) {
             if (err) {
                 throw err;
             } // handle folder creation error
@@ -371,7 +371,7 @@ module.exports = function(config){
 
     this.makeDestinationFolder = function (file){
         var newDestName = this.outFolder + file.substring(0,8);
-        _fsu.ensureExists(newDestName, 0777, function(err) {
+        _fsu.ensureExists(newDestName, 0o777, function(err) {
             if (err) {
                 throw err;
             }

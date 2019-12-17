@@ -12,6 +12,7 @@
 # Setup hosts files
 echo -e "\n--- VHOSTS install ---\n"
 rm /etc/nginx/sites-available/default
+rm /etc/nginx/sites-enabled/default
 # rm /etc/nginx/sites-available/backend
 # rm /etc/nginx/sites-available/frontend
 # rm /etc/nginx/sites-available/api
@@ -19,8 +20,10 @@ rm /etc/nginx/sites-available/default
 
 VHOST1=$(cat <<EOF
 server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    ssl on;
+    ssl_certificate /vagrant/www/ssl/server.crt;
+    ssl_certificate_key /vagrant/www/ssl/server.key;
     root /var/www/agmsite/www;
     index index.php index.html index.htm index.nginx-debian.html;
     error_page 404 /index.html;
@@ -47,8 +50,10 @@ ln -s /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
 
 VHOST3=$(cat <<EOF
 server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    ssl on;
+    ssl_certificate /vagrant/www/ssl/server.crt;
+    ssl_certificate_key /vagrant/www/ssl/server.key;
     root /var/www/agmsite/engine/frontend/web;
     index index.php index.html index.htm index.nginx-debian.html;
     # сервер API должен позволять CORS!
@@ -77,8 +82,10 @@ ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
 
 VHOST2=$(cat <<EOF
 server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    ssl on;
+    ssl_certificate /vagrant/www/ssl/server.crt;
+    ssl_certificate_key /vagrant/www/ssl/server.key;
     root /var/www/agmsite/engine/backend/web;
     index index.php index.html index.htm index.nginx-debian.html;
     server_name admin.agmsite.com;
@@ -119,38 +126,20 @@ EOF
 touch /etc/nginx/sites-available/backend
 echo "${VHOST2}" >> /etc/nginx/sites-available/backend
 ln -s /etc/nginx/sites-available/backend /etc/nginx/sites-enabled/backend
-systemctl reload nginx
-
+nginx -s reload 
 
 # install MC
 echo -e "\n--- MC install ---\n"
 apt-get install -y mc >> /vagrant/vm_build.log 2>&1
-# MySQL setup for development purposes ONLY
+
 DBNAME=yii2
-DBPASSWD=519822
-echo -e "\n--- MySql install ---\n"
-apt-get install mysql-client mysql-server >> /vagrant/vm_build.log 2>&1
-echo -e "\n--- Install MySQL specific packages and settings ---\n"
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD"
-debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none"
-apt-get purge mysql-server-5.7 mysql-client-5.7 mysql-common mysql-server-core-5.7 mysql-client-core-5.7 -y >> /vagrant/vm_build.log 2>&1
-rm -rf /etc/mysql /var/lib/mysql >> /vagrant/vm_build.log 2>&1
-rm -rf /var/lib/mysql >> /vagrant/vm_build.log 2>&1
-apt-get autoremove -y >> /vagrant/vm_build.log 2>&1
-apt-get autoclean -y >> /vagrant/vm_build.log 2>&1
-apt-get -y install mysql-client mysql-server >> /vagrant/vm_build.log 2>&1
-echo -e "\n--- Install phpmyadmin ---\n"
-apt-get -y install phpmyadmin >> /vagrant/vm_build.log 2>&1
+DBPASSWD=secret
 
 echo -e "\n--- Setting up our MySQL db ---\n"
+mysql -uroot -p$DBPASSWD -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DBPASSWD';" >> /vagrant/vm_build.log 2>&1
 mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
 # дадим возможность подключаться к этой базе с хоста
-mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON $DBNAME.* TO root@"%" IDENTIFIED BY '$DBPASSWD' WITH GRANT OPTION;" >> /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON $DBNAME.* TO root@'%' IDENTIFIED BY '$DBPASSWD' WITH GRANT OPTION;" >> /vagrant/vm_build.log 2>&1
 mysqladmin -u root -p$DBPASSWD flush-privileges >> /vagrant/vm_build.log 2>&1
 # провести миграции
 cd /var/www/agmsite/engine

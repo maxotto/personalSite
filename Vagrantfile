@@ -9,7 +9,7 @@ Vagrant.configure(2) do |config|
   config.vbguest.iso_path = "c:/Program Files/Oracle/VirtualBox/VBoxGuestAdditions.iso"
   config.vbguest.auto_update = true
   #config.vbguest.no_remote = true
-  config.vm.box = "brownell/xenial64lemp"
+  config.vm.box = "damianlewis/ubuntu-18.04-lemp"
   # config.vm.box_check_update = false
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
@@ -30,6 +30,7 @@ Vagrant.configure(2) do |config|
   # config.vm.synced_folder "../Vagrant_tmp", "/fcpdtv_tmp"
 
   config.vm.synced_folder "./www/dist", "/var/www/agmsite"
+  config.vm.synced_folder "./engine", "/var/www/agmsite/engine"
 
   # config.vm.synced_folder "B:/msk-vds02s01.rtrs.local/fcpdtv/raw/", "/fcpdtv_backups"
 

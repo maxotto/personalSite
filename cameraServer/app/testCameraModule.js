@@ -1,9 +1,33 @@
 var config1 = {
-    inRoot: 'C:/web_camera_in/',
-    outRoot: 'C:/web_camera_data/',
+    inRoot: '../web_camera_in/',
+    outRoot: '../data/',
     cameraNumber: 2,
     extFilter: 'jpg',
     videoConcatPeriod: 60*1000,
+    videoOptions: {
+        fps: 25,
+        loop: 0.2, // seconds
+        transition: false,
+        // transitionDuration: 0.1, // seconds
+        videoBitrate: 1024,
+        videoCodec: 'libx264',
+        size: '1920x1080',
+        // audioBitrate: '128k',
+        // audioChannels: 2,
+        format: 'mp4'
+        // pixelFormat: 'yuv420p'
+    },
+    dayVideoCreateBatchSize: 50,
+    logger: {
+        transports: {
+            console: {
+                level: 'info'
+            },
+            file: {
+                level: 'error'
+            }
+        },
+    }
     /* ftpConfig: {
         host: 'srv038.infobox.ru',
         port: 21,
@@ -16,8 +40,8 @@ var camera1 = new (require('./core/camera'))(config1);
 camera1.watch();
 
 var config2 = {
-    inRoot: 'C:/mikhailichenko.site/cameraServer/web-camera-in/',
-    outRoot: 'C:/mikhailichenko.site/cameraServer/data/',
+    inRoot: '../web_camera_in/',
+    outRoot: '../data/',
     cameraNumber: 2,
     extFilter: 'jpg',
     videoConcatPeriod: 60*1000,
