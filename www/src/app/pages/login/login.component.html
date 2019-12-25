@@ -1,52 +1,63 @@
-<div class="login-page" >
-    <div class="row justify-content-md-center" [@routerTransition]>
-        <div class="col-md-4 push-md-4">
-            <img src="assets/logo.png" width="50px" class="user-avatar" alt="user logo"/>
-            <h2>Вход в закрытые разделы сайта</h2>
-            <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
-                <div class="form-content">
-                    <div class="form-group">
-                        <input
-                                type="text"
-                                class="form-control input-underline input-lg"
-                                placeholder="Имя пользователя"
-                                id="username"
-                                name="username"
-                                [(ngModel)]="model.username"
-                                #username="ngModel"
-                                required
-                        >
-                    </div>
-                    <div class="form-group">
-                        <input
-                                type="password"
-                                class="form-control input-underline input-lg"
-                                placeholder="Пароль"
-                                id="password"
-                                name="password"
-                                [(ngModel)]="model.password"
-                                #password="ngModel"
-                                required
-                        >
-                    </div>
-                </div>
-                <button class="btn rounded-btn"> Вход </button>
-                <br>
-                <div *ngIf="error" class="alert alert-danger">
-                    <strong>Что-то пошло не так!</strong> {{error}}
-                </div>
-              <br>или войдите через FaceBook<br>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                (click)="signInWithFB()"
-                *ngIf="loggedIn===false">
-                FB login
-              </button>
-              <div *ngIf="fbError" class="alert alert-danger">
-                <strong>Что-то пошло не так!</strong> {{fbError}}
-              </div>
-            </form>
+<div class="login-page">
+  <div class="row justify-content-md-center" [@routerTransition]>
+    <div class="col-md-4 push-md-4">
+      <img
+        src="assets/logo.png"
+        width="50px"
+        class="user-avatar"
+        alt="user logo"
+      />
+      <h2>Вход в закрытые разделы сайта</h2>
+      <form
+        name="form"
+        (ngSubmit)="f.form.valid && login()"
+        #f="ngForm"
+        novalidate
+      >
+        <div class="form-content">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control input-underline input-lg"
+              placeholder="Имя пользователя"
+              id="username"
+              name="username"
+              [(ngModel)]="model.username"
+              #username="ngModel"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control input-underline input-lg"
+              placeholder="Пароль"
+              id="password"
+              name="password"
+              [(ngModel)]="model.password"
+              #password="ngModel"
+              required
+            />
+          </div>
         </div>
+        <button class="btn rounded-btn">Вход</button>
+        <br />
+        <div *ngIf="error" class="alert alert-danger">
+          <strong>Что-то пошло не так!</strong> {{ error }}
+        </div>
+        <br />или войдите через FaceBook<br />
+        <button
+          type="submit"
+          class="btn btn-primary"
+          (click)="signInWithFB()"
+          *ngIf="loggedIn === false"
+        >
+          FB login
+        </button>
+        <div *ngIf="fbError" class="alert alert-danger">
+          <strong>Что-то пошло не так!</strong> {{ fbError }}
+        </div>
+      </form>
     </div>
+  </div>
 </div>

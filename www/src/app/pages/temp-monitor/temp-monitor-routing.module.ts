@@ -1,13 +1,11 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { TempMonitorComponent } from './temp-monitor.component';
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
+import { TempMonitorComponent } from './temp-monitor.component'
 
-const routes: Routes = [
-    { path: '', component: TempMonitorComponent }
-];
+const routes: Routes = [{ path: '', component: TempMonitorComponent }]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class TempMonitorRoutingModule { }
+export class TempMonitorRoutingModule {}
