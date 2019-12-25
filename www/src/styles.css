@@ -7,7 +7,7 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url("assets/IMG_9963.jpg");
+    url('assets/IMG_9963.jpg');
   overflow-x: hidden;
 }
 .img-logo {

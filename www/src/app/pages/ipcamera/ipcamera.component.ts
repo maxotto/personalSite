@@ -1,23 +1,22 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {NgbCarousel} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { NgbCarousel } from '@ng-bootstrap/ng-bootstrap'
 
 @Component({
   selector: 'app-ipcamera',
   templateUrl: './ipcamera.component.html',
-  styleUrls: ['./ipcamera.component.css']
+  styleUrls: ['./ipcamera.component.css'],
 })
 export class IpcameraComponent implements OnInit {
-  @ViewChild('carousel', { static: false }) carousel: NgbCarousel;
-  hash: number;
+  @ViewChild('carousel', { static: false }) carousel: NgbCarousel
+  hash: number
 
   constructor() {
-    const time = new Date();
-    this.hash = time.getTime();
+    const time = new Date()
+    this.hash = time.getTime()
   }
 
   ngOnInit() {
-    this.carousel.pause();
-    console.log(this.carousel);
+    this.carousel.pause()
+    console.log(this.carousel)
   }
-
 }

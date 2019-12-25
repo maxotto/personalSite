@@ -1,15 +1,12 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TempMonitorComponent } from './temp-monitor.component';
-import { TempMonitorRoutingModule } from './temp-monitor-routing.module';
-import { ThingSpeakService } from '../../@core/services/thing-speak.service';
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { TempMonitorComponent } from './temp-monitor.component'
+import { TempMonitorRoutingModule } from './temp-monitor-routing.module'
+import { ThingSpeakService } from '../../@core/services/thing-speak.service'
 
 @NgModule({
-  imports: [
-    CommonModule,
-    TempMonitorRoutingModule
-  ],
+  imports: [CommonModule, TempMonitorRoutingModule],
   declarations: [TempMonitorComponent],
-  providers: [ThingSpeakService]
+  providers: [ThingSpeakService],
 })
-export class TempMonitorModule { }
+export class TempMonitorModule {}

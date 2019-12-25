@@ -1,7 +1,11 @@
-<div class="container-fluid"  (window:resize)="onResize($event)" [style.height.px]='height'>
+<div
+  class="container-fluid"
+  (window:resize)="onResize($event)"
+  [style.height.px]="height"
+>
   <h1 class="text-center text-white">
     Мониторинг температуры в деревне
   </h1>
-  <br>
+  <br />
   <div id="chart" style="background-color: aliceblue;"></div>
 </div>
