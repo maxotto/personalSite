@@ -21,29 +21,31 @@ export class AuthenticationService {
     public user: string;
     public fbUser: SocialUser;
     private apiURL: string;
+    private protocol: string;
 
     constructor(
-      private httpClient: HttpClient,
-      @Inject(Window)private _window: Window,
-      private router: Router,
-      private fbAuthService: AuthService
+        private httpClient: HttpClient,
+        @Inject(Window) private _window: Window,
+        private router: Router,
+        private fbAuthService: AuthService
     ) {
-      // set token if saved in local storage
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.token = currentUser && currentUser.token;
-      this.refreshToken = currentUser && currentUser.refresh;
-      this.user = currentUser && currentUser.user;
-      const { hostname, apiURL } = coreUrls(this._window);
-      this.apiURL = apiURL;
-      let mode = 'PROD';
-      if (isDevMode()) {
-        mode = 'DEV';
-        console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
-      }
-      // Check FaceBook login state
-      this.fbAuthService.authState.subscribe((user) => {
-        this.fbUser = user;
-      });
+        // set token if saved in local storage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.token = currentUser && currentUser.token;
+        this.refreshToken = currentUser && currentUser.refresh;
+        this.user = currentUser && currentUser.user;
+        const { protocol, hostname, apiURL } = coreUrls(this._window);
+        this.apiURL = apiURL;
+        this.protocol = protocol;
+        let mode = 'PROD';
+        if (isDevMode()) {
+            mode = 'DEV';
+            console.log(`Use ${hostname} as backend hostname in ${mode} Mode`);
+        }
+        // Check FaceBook login state
+        this.fbAuthService.authState.subscribe((user) => {
+            this.fbUser = user;
+        });
     }
     changeAuthState(number) {
         this._authStateSource.next(number);
@@ -54,9 +56,9 @@ export class AuthenticationService {
             return false;
         }
         if (this.fbUser) {
-          console.log('this.fbUser => ', this.fbUser);
-          this.changeAuthState(1);
-          return true;
+            console.log('this.fbUser => ', this.fbUser);
+            this.changeAuthState(1);
+            return true;
         }
         const jwtHelper: JwtHelper = new JwtHelper();
         if (!(jwtHelper.isTokenExpired(this.token))) {
@@ -67,7 +69,7 @@ export class AuthenticationService {
             // делаем попытку рефреша токенов
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             this.refreshTokens(currentUser).subscribe(
-              () => {
+                () => {
                     this.changeAuthState(1);
                     return true;
                 },
@@ -84,11 +86,7 @@ export class AuthenticationService {
             'username': username,
             'password': password
         };
-        const url = this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN + '/login';
-        console.log(url);
-        // const url = 'http://api.agmsite.com/login';
-        // console.log('!!!!!');
-        // console.log(url);
+        const url = this.protocol + '//' + this.apiURL + '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN + '/login';
         return this.httpClient.post(url, body).pipe(map((response: any) => {
             // login successful if there's a jwt token in the response
             const accessToken = response && response.access;
@@ -142,7 +140,7 @@ export class AuthenticationService {
                 return true;
             } else {
                 const errors = response && response.errors;
-                console.error({errors});
+                console.error({ errors });
                 this.logout();
                 return false;
             }

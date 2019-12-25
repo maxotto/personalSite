@@ -1,4 +1,4 @@
-import {isDevMode} from '@angular/core';
+import { isDevMode } from '@angular/core';
 
 export const GlobalParams = Object.freeze({
   API_SUBDOMEN: 'api',
@@ -9,7 +9,7 @@ export const GlobalParams = Object.freeze({
   THINGSPEAK_API_DAYS: 5
 });
 
-export const coreUrls = (_window) =>  {
+export const coreUrls = (_window) => {
   let hostname = _window.location.hostname.replace(/^(www\.)/, '');
   if (isDevMode()) {
     hostname = 'agmsite.com';
@@ -17,10 +17,11 @@ export const coreUrls = (_window) =>  {
   const apiURL = `${GlobalParams.API_SUBDOMEN}.${hostname}`;
   const apiRoot = '/' + GlobalParams.API_VERSION + '/' + GlobalParams.API_SUBDOMEN;
   return Object.freeze({
+    protocol: _window.location.protocol,
     hostname: hostname,
     apiURL: apiURL,
     apiRoot: apiRoot,
-    noTokenUrls:  [
+    noTokenUrls: [
       hostname + `/` + apiRoot + `/login`,
       'api.thingspeak.com/'
     ],
