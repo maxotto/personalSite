@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
-import { MouseEvent } from '@agm/core'
-import { Marker } from '@agm/core/services/google-maps-types'
+// import { MouseEvent } from '@agm/core'
+// import { Marker } from '@agm/core/services/google-maps-types'
 
 @Component({
   selector: 'app-google-maps',
@@ -12,20 +12,20 @@ export class GoogleMapsComponent implements OnInit {
   lng = 37.620451732869014
   zoom = 15
   height = 800
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.height = window.innerHeight - 145
   }
-  dragEnd(m: Marker, $event: any) {
-    alert(
-      'Новые координаты: lat->' +
-        $event.coords.lat +
-        ', lng->' +
-        $event.coords.lng
-    )
-    console.log('dragEnd', m, $event)
-  }
+  // dragEnd(m: Marker, $event: any) {
+  //   alert(
+  //     'Новые координаты: lat->' +
+  //       $event.coords.lat +
+  //       ', lng->' +
+  //       $event.coords.lng
+  //   )
+  //   console.log('dragEnd', m, $event)
+  // }
   onResize(event) {
     // console.log(event);
     // console.log(event.target);

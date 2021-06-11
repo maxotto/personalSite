@@ -4,7 +4,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { AngularFontAwesomeModule } from 'angular-font-awesome'
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
 
 import { AuthGuard } from './@core/guard/auth.guard'
@@ -21,21 +21,8 @@ import { YandexMailLoginFormComponent } from './components/yandex-mail-login-for
 import { SidebarComponent } from './components/sidebar/sidebar.component'
 import { NotFoundComponent } from './components/not-found/not-found.component'
 
-import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login'
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login'
 import { FacebookLoginProvider } from 'angularx-social-login'
-
-import { AgmCoreModule } from '@agm/core'
-
-const config = new AuthServiceConfig([
-  {
-    id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider('973483776359176'),
-  },
-])
-
-export function provideConfig() {
-  return config
-}
 
 @NgModule({
   declarations: [
@@ -50,20 +37,28 @@ export function provideConfig() {
   imports: [
     BrowserModule,
     NgbModule,
-    AngularFontAwesomeModule,
+    FontAwesomeModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyARIMiX_C7rE4U-pM6nih2n2z2z0YfhrfY',
-    }),
+    // AgmCoreModule.forRoot({
+    //   apiKey: 'AIzaSyARIMiX_C7rE4U-pM6nih2n2z2z0YfhrfY',
+    // }),
     SocialLoginModule,
   ],
   providers: [
     {
-      provide: AuthServiceConfig,
-      useFactory: provideConfig,
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: true,
+        providers: [
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider('973483776359176'),
+          }
+        ],
+      },
     },
     { provide: Window, useValue: window },
     AuthGuard,
@@ -76,4 +71,4 @@ export function provideConfig() {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -7,7 +7,7 @@ import { coreUrls } from '../../params'
 import { JwtHelper } from '../jwt/jwtHelper'
 import { Router } from '@angular/router'
 import { isDevMode } from '@angular/core'
-import { AuthService } from 'angularx-social-login'
+import { SocialAuthService } from 'angularx-social-login'
 import { SocialUser } from 'angularx-social-login'
 
 @Injectable()
@@ -26,7 +26,7 @@ export class AuthenticationService {
     private httpClient: HttpClient,
     @Inject(Window) private _window: Window,
     private router: Router,
-    private fbAuthService: AuthService
+    private fbAuthService: SocialAuthService
   ) {
     // set token if saved in local storage
     const currentUser = JSON.parse(localStorage.getItem('currentUser'))
@@ -140,11 +140,11 @@ export class AuthenticationService {
     return this.httpClient
       .post(
         this.apiURL +
-          '/' +
-          GlobalParams.API_VERSION +
-          '/' +
-          GlobalParams.API_SUBDOMEN +
-          '/refresh',
+        '/' +
+        GlobalParams.API_VERSION +
+        '/' +
+        GlobalParams.API_SUBDOMEN +
+        '/refresh',
         body
       )
       .pipe(

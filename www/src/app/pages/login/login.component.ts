@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { routerTransition } from '../../router.animations'
 import { AuthenticationService } from '../../@core/services'
-import { AuthService } from 'angularx-social-login'
+import { SocialAuthService } from 'angularx-social-login'
 import { FacebookLoginProvider } from 'angularx-social-login'
 import { SocialUser } from 'angularx-social-login'
 
@@ -16,14 +16,14 @@ export class LoginComponent implements OnInit {
   model: any = {}
   user: SocialUser
   loading = false
-  private loggedIn: boolean
-  private fbError = ''
-  private error = ''
+  public loggedIn: boolean
+  public fbError = ''
+  public error = ''
   constructor(
     public router: Router,
     private authenticationService: AuthenticationService,
-    private FBauthService: AuthService
-  ) {}
+    private FBauthService: SocialAuthService
+  ) { }
 
   ngOnInit() {
     this.FBauthService.authState.subscribe(user => {

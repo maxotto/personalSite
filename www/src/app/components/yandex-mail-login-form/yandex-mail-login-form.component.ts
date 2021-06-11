@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit } from '@angular/core';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-yandex-mail-login-form',
@@ -6,7 +7,8 @@ import { Component, OnInit } from '@angular/core'
   styleUrls: ['./yandex-mail-login-form.component.css'],
 })
 export class YandexMailLoginFormComponent implements OnInit {
-  constructor() {}
+  public faCog = faCog;
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }
