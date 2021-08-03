@@ -140,11 +140,11 @@ export class AuthenticationService {
     return this.httpClient
       .post(
         this.apiURL +
-        '/' +
-        GlobalParams.API_VERSION +
-        '/' +
-        GlobalParams.API_SUBDOMEN +
-        '/refresh',
+          '/' +
+          GlobalParams.API_VERSION +
+          '/' +
+          GlobalParams.API_SUBDOMEN +
+          '/refresh',
         body
       )
       .pipe(

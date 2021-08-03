@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
     public router: Router,
     private authenticationService: AuthenticationService,
     private FBauthService: SocialAuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.FBauthService.authState.subscribe(user => {

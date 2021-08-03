@@ -14,4 +14,4 @@ import { GoogleMapsRoutingModule } from './google-maps-routing.module'
   ],
   declarations: [GoogleMapsComponent],
 })
-export class GoogleMapsModule { }
+export class GoogleMapsModule {}

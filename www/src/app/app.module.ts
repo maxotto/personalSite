@@ -21,7 +21,10 @@ import { YandexMailLoginFormComponent } from './components/yandex-mail-login-for
 import { SidebarComponent } from './components/sidebar/sidebar.component'
 import { NotFoundComponent } from './components/not-found/not-found.component'
 
-import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login'
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+} from 'angularx-social-login'
 import { FacebookLoginProvider } from 'angularx-social-login'
 
 @NgModule({
@@ -56,7 +59,7 @@ import { FacebookLoginProvider } from 'angularx-social-login'
           {
             id: FacebookLoginProvider.PROVIDER_ID,
             provider: new FacebookLoginProvider('973483776359176'),
-          }
+          },
         ],
       },
     },
@@ -71,4 +74,4 @@ import { FacebookLoginProvider } from 'angularx-social-login'
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

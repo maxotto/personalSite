@@ -6,11 +6,13 @@ describe('TempMonitorComponent', () => {
   let component: TempMonitorComponent
   let fixture: ComponentFixture<TempMonitorComponent>
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TempMonitorComponent],
-    }).compileComponents()
-  }))
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TempMonitorComponent],
+      }).compileComponents()
+    })
+  )
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TempMonitorComponent)

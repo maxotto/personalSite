@@ -6,11 +6,13 @@ describe('YandexMailLoginFormComponent', () => {
   let component: YandexMailLoginFormComponent
   let fixture: ComponentFixture<YandexMailLoginFormComponent>
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [YandexMailLoginFormComponent],
-    }).compileComponents()
-  }))
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [YandexMailLoginFormComponent],
+      }).compileComponents()
+    })
+  )
 
   beforeEach(() => {
     fixture = TestBed.createComponent(YandexMailLoginFormComponent)

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { AuthenticationService } from '../../@core/services'
-import { faSearch, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faHome } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-navbar',
@@ -8,11 +8,11 @@ import { faSearch, faHome } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
-  public faSearch = faSearch;
-  public faHome = faHome;
+  public faSearch = faSearch
+  public faHome = faHome
   public user = ''
   public isNavbarCollapsed: boolean
-  constructor(private auth: AuthenticationService) { }
+  constructor(private auth: AuthenticationService) {}
 
   ngOnInit() {
     this.auth.isLogged()

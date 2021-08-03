@@ -6,11 +6,13 @@ describe('PhotoGalleryComponent', () => {
   let component: PhotoGalleryComponent
   let fixture: ComponentFixture<PhotoGalleryComponent>
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [PhotoGalleryComponent],
-    }).compileComponents()
-  }))
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PhotoGalleryComponent],
+      }).compileComponents()
+    })
+  )
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PhotoGalleryComponent)

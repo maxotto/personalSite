@@ -12,7 +12,7 @@ export class GoogleMapsComponent implements OnInit {
   lng = 37.620451732869014
   zoom = 15
   height = 800
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.height = window.innerHeight - 145

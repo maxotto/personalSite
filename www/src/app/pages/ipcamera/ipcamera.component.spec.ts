@@ -6,11 +6,13 @@ describe('IpcameraComponent', () => {
   let component: IpcameraComponent
   let fixture: ComponentFixture<IpcameraComponent>
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [IpcameraComponent],
-    }).compileComponents()
-  }))
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [IpcameraComponent],
+      }).compileComponents()
+    })
+  )
 
   beforeEach(() => {
     fixture = TestBed.createComponent(IpcameraComponent)
